@@ -55,13 +55,30 @@ export function detectQueryLanguage(query: string): 'ja' | 'en' {
   return jaRegex.test(query) ? 'ja' : 'en';
 }
 
+import { routeQuery, RouteResult } from './queryRouter';
+
+export interface MatchResult {
+  id: string;
+  content: string;
+  source: string;
+  section: string;
+  metadata: Record<string, any>;
+  similarity: number;
+}
+
+export interface RerankedResult extends MatchResult {
+  entityBoost: number;
+  specificityBoost: number;
+  languageBoost: number;
+  intentBoost: number;
+  finalScore: number;
+}
+
 export function computeHybridReranking(
   item: MatchResult,
-  queryText: string
+  route: RouteResult
 ): RerankedResult {
   const vectorSim = typeof item.similarity === 'number' ? item.similarity : parseFloat(item.similarity as any);
-  const lowerQuery = queryText.toLowerCase();
-  const queryLang = detectQueryLanguage(queryText);
   const chunkLang = (item.metadata?.language || (item.source?.startsWith('ja/') ? 'ja' : 'en')).toLowerCase();
 
   const contentLower = item.content.toLowerCase();
@@ -71,113 +88,56 @@ export function computeHybridReranking(
   let entityBoost = 0;
   let specificityBoost = 0;
   let languageBoost = 0;
+  let intentBoost = 0;
 
-  // 1. Exact Entity / Topic Boosts
-  // FlyRank
-  if ((lowerQuery.includes('flyrank') || lowerQuery.includes('フライランク')) &&
-      (contentLower.includes('flyrank') || sectionLower.includes('flyrank') || contentLower.includes('フライランク'))) {
-    entityBoost += 0.18;
+  // 1. Language Alignment Boost & Penalty
+  if (route.language === chunkLang) {
+    languageBoost += 0.25;
+  } else {
+    languageBoost -= 0.35; // Strongly penalize cross-language chunk pollution
   }
 
-  // AyusLab / ISIRI Technologies
-  if ((lowerQuery.includes('ayuslab') || lowerQuery.includes('isiri') || lowerQuery.includes('アユスラボ')) &&
-      (contentLower.includes('ayuslab') || contentLower.includes('isiri') || sectionLower.includes('ayuslab') || contentLower.includes('アユスラボ'))) {
-    entityBoost += 0.20;
+  // 2. Query Intent / Domain Source Reranking
+  for (const [srcPattern, boostVal] of Object.entries(route.sourceBoosts)) {
+    if (sourceLower.includes(srcPattern.toLowerCase())) {
+      intentBoost += boostVal;
+    }
   }
 
-  // Final-Year Project / Colorectal Polyp
-  const isFinalYearQuery = lowerQuery.includes('final-year') || lowerQuery.includes('final year') || 
-                            lowerQuery.includes('colorectal') || lowerQuery.includes('polyp') || 
-                            lowerQuery.includes('卒業研究') || lowerQuery.includes('ポリープ');
-
-  if (isFinalYearQuery) {
-    const isColorectalProjectChunk = sourceLower.includes('projects.md') && 
-      (contentLower.includes('colorectal') || contentLower.includes('polyp') || 
-       sectionLower.includes('adaptive temporal validation') || sectionLower.includes('ポリープ') || 
-       sectionLower.includes('1.大腸ポリープ') || sectionLower.includes('1. adaptive temporal validation'));
+  // 3. Entity Alignment Reranking
+  if (route.entity) {
+    const entLower = route.entity.toLowerCase();
+    const isEntityMatch = contentLower.includes(entLower) || sectionLower.includes(entLower);
     
-    if (isColorectalProjectChunk) {
-      entityBoost += 0.40;
-    } else if (contentLower.includes('colorectal') || contentLower.includes('polyp') || contentLower.includes('ポリープ')) {
-      entityBoost += 0.15;
+    // Check key entity synonyms
+    const isFlyRankMatch = route.entity === 'FlyRank' && (contentLower.includes('flyrank') || sectionLower.includes('flyrank') || contentLower.includes('フライランク'));
+    const isIsiriMatch = route.entity.includes('ISIRI') && (contentLower.includes('isiri') || contentLower.includes('ayuslab') || sectionLower.includes('isiri') || contentLower.includes('アユスラボ'));
+    const isGeoMatch = route.entity === 'GeoSentinel' && (contentLower.includes('geosentinel') || contentLower.includes('landslide') || contentLower.includes('土砂崩れ'));
+    const isSmartQMatch = route.entity === 'SmartQ Generator' && (contentLower.includes('smartq') || contentLower.includes('多言語問題'));
+    
+    if (isEntityMatch || isFlyRankMatch || isIsiriMatch || isGeoMatch || isSmartQMatch) {
+      entityBoost += 0.30;
     }
   }
 
-  // Precision@50
-  if ((lowerQuery.includes('precision@50') || lowerQuery.includes('p@50')) &&
-      (contentLower.includes('precision@50') || contentLower.includes('p@50') || contentLower.includes('0.444') || contentLower.includes('0.392'))) {
-    entityBoost += 0.20;
+  // 4. Section Specificity & Overview Priority
+  if (sectionLower.includes('leakage prevention') || sectionLower.includes('disclaimer') || sectionLower.includes('license')) {
+    specificityBoost -= 0.30;
   }
 
-  // GeoSentinel / Landslide
-  if ((lowerQuery.includes('geosentinel') || lowerQuery.includes('landslide') || lowerQuery.includes('土砂崩れ')) &&
-      (contentLower.includes('geosentinel') || contentLower.includes('landslide') || contentLower.includes('土砂崩れ'))) {
-    entityBoost += 0.15;
+  // Prioritize primary project/experience overview chunks over deep sub-features
+  if (sectionLower.includes('overview') || sectionLower.includes('summary') || sectionLower.includes('quick key metrics') || sectionLower.includes('project overview')) {
+    specificityBoost += 0.10;
   }
 
-  // SmartQ Generator
-  if ((lowerQuery.includes('smartq') || lowerQuery.includes('多言語問題')) &&
-      (contentLower.includes('smartq') || contentLower.includes('多言語問題'))) {
-    entityBoost += 0.15;
-  }
-
-  // WGAN-GP / Face Generation
-  if ((lowerQuery.includes('wgan') || lowerQuery.includes('face generation') || lowerQuery.includes('顔画像')) &&
-      (contentLower.includes('wgan') || contentLower.includes('face generation') || contentLower.includes('顔画像'))) {
-    entityBoost += 0.15;
-  }
-
-  // Invoice Parser
-  if ((lowerQuery.includes('invoice') || lowerQuery.includes('請求書')) &&
-      (contentLower.includes('invoice') || contentLower.includes('請求書'))) {
-    entityBoost += 0.15;
-  }
-
-  // YOLO / Car & Pedestrian
-  if ((lowerQuery.includes('yolo') || lowerQuery.includes('pedestrian') || lowerQuery.includes('歩行者')) &&
-      (contentLower.includes('yolo') || contentLower.includes('pedestrian') || contentLower.includes('歩行者'))) {
-    entityBoost += 0.15;
-  }
-
-  // Power BI / E-Commerce Sales
-  if ((lowerQuery.includes('power bi') || lowerQuery.includes('dax') || lowerQuery.includes('売上ダッシュボード')) &&
-      (contentLower.includes('power bi') || contentLower.includes('dax') || contentLower.includes('売上ダッシュボード'))) {
-    entityBoost += 0.15;
-  }
-
-  // Bank Management System
-  if ((lowerQuery.includes('bank management') || lowerQuery.includes('銀行管理')) &&
-      (contentLower.includes('bank management') || contentLower.includes('銀行管理'))) {
-    entityBoost += 0.15;
-  }
-
-  // 2. Specificity Boost
-  const isSpecificTopicQuery = lowerQuery.includes('ayuslab') || lowerQuery.includes('flyrank') || 
-                               isFinalYearQuery || lowerQuery.includes('precision@50') || 
-                               lowerQuery.includes('build') || lowerQuery.includes('project') || 
-                               lowerQuery.includes('internship') || lowerQuery.includes('インターン');
-
-  if (isSpecificTopicQuery) {
-    if (sourceLower.includes('projects.md') || sourceLower.includes('experience.md')) {
-      specificityBoost += 0.15;
-    }
-    if (sourceLower.includes('about.md') || sourceLower.includes('profiles.md') || sourceLower.includes('questions.md')) {
-      specificityBoost -= 0.20;
-    }
-  }
-
-  // 3. Language Relevance Boost
-  if (queryLang === chunkLang) {
-    languageBoost += 0.12;
-  }
-
-  const finalScore = vectorSim + entityBoost + specificityBoost + languageBoost;
+  const finalScore = vectorSim + entityBoost + specificityBoost + languageBoost + intentBoost;
 
   return {
     ...item,
     entityBoost,
     specificityBoost,
     languageBoost,
+    intentBoost,
     finalScore,
   };
 }
@@ -201,6 +161,7 @@ export interface RetrievalMetrics {
     endTime: string;
     durationMs: number;
   };
+  route: RouteResult;
 }
 
 export async function performHybridRetrieval(
@@ -209,6 +170,9 @@ export async function performHybridRetrieval(
   topK = 5
 ): Promise<{ topChunks: RerankedResult[]; metrics: RetrievalMetrics }> {
   const supabase = getSupabaseClient();
+
+  // Stage 1: Lightweight Query Intent & Entity Router
+  const route = routeQuery(queryText);
 
   // Stage 2: Embedding Generation (Warm persistent microservice with CLI fallback)
   const embStart = performance.now();
@@ -296,17 +260,43 @@ export async function performHybridRetrieval(
 
   const rawResults: MatchResult[] = data || [];
 
-  // Stage 4: Reranking
+  // Stage 4: Router Metadata & Hybrid Reranking
   const rerankStart = performance.now();
   const rerankStartTimeISO = new Date().toISOString();
 
-  const reranked: RerankedResult[] = rawResults.map((item) => computeHybridReranking(item, queryText));
+  const rawSortedBefore = [...rawResults].sort((a, b) => b.similarity - a.similarity).slice(0, topK);
+
+  const reranked: RerankedResult[] = rawResults.map((item) => computeHybridReranking(item, route));
   reranked.sort((a, b) => b.finalScore - a.finalScore);
   const topChunks = reranked.slice(0, topK);
 
   const rerankEnd = performance.now();
   const rerankEndTimeISO = new Date().toISOString();
   const rerankDurationMs = Math.round((rerankEnd - rerankStart) * 100) / 100;
+
+  // Diagnostic logging in development mode
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`\n=======================================================================`);
+    console.log(`[QUERY ROUTER DIAGNOSTIC LOG]`);
+    console.log(`Query: "${queryText}"`);
+    console.log(`Intent: ${route.intent}`);
+    console.log(`Intent confidence: ${route.confidence}`);
+    console.log(`Language: ${route.language}`);
+    console.log(`Detected entity: ${route.entity || 'None'}`);
+    console.log(`\nTop retrieved chunks before routing:`);
+    rawSortedBefore.forEach((c, i) => {
+      const src = c.source || c.metadata?.source || 'unknown';
+      const sec = c.section || c.metadata?.section || 'Overview';
+      console.log(`  ${i + 1}. [Source: ${src} | Section: ${sec}] VectorSim: ${c.similarity?.toFixed(4)}`);
+    });
+    console.log(`\nTop retrieved chunks after routing:`);
+    topChunks.forEach((c, i) => {
+      const src = c.source || c.metadata?.source || 'unknown';
+      const sec = c.section || c.metadata?.section || 'Overview';
+      console.log(`  ${i + 1}. [Source: ${src} | Section: ${sec}] FinalScore: ${c.finalScore?.toFixed(4)} (VectorSim: ${c.similarity?.toFixed(4)})`);
+    });
+    console.log(`=======================================================================\n`);
+  }
 
   const metrics: RetrievalMetrics = {
     embedding: {
@@ -327,6 +317,7 @@ export async function performHybridRetrieval(
       endTime: rerankEndTimeISO,
       durationMs: rerankDurationMs,
     },
+    route,
   };
 
   return { topChunks, metrics };

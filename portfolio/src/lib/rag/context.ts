@@ -47,7 +47,7 @@ export function assembleContext(
     }
     seenContents.add(normalizedContent);
 
-    const chunkHeader = `[Chunk ${contextParts.length + 1} | Source: ${source} | Section: ${section} | Language: ${language}]`;
+    const chunkHeader = `--- Context Item ${contextParts.length + 1} (${source} - ${section}) ---`;
     const formattedChunk = `${chunkHeader}\n${cleanedContent}\n`;
 
     if (currentLength + formattedChunk.length > maxCharLength && contextParts.length > 0) {
