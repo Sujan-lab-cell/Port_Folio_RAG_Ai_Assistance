@@ -409,7 +409,7 @@ export function PortfolioExperience() {
       </section>
 
       <footer className="border-t border-slate-900/10 px-4 py-8 text-center text-sm text-slate-500 dark:border-white/10 dark:text-slate-400">
-        Built with Next.js, TypeScript, Tailwind CSS, Framer Motion, and Lucide Icons. © {new Date().getFullYear()} Sujan K S.
+        © {new Date().getFullYear()} Sujan K S.
       </footer>
 
       <AnimatePresence>

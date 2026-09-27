@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/src/i18n";
-import { ChatMessage } from "./types";
+import { ChatMessage, ChatHistoryItem } from "./types";
 import { AIButton } from "./AIButton";
 import { AIChatWindow } from "./AIChatWindow";
 import { AnimatePresence } from "framer-motion";
@@ -37,6 +37,18 @@ export const AIAssistantProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const questionText = userPrompt.trim();
     const msgId = Date.now().toString() + Math.random().toString(36).substring(2, 5);
 
+    // Build short-term history array (up to 6 most recent message items)
+    const history: ChatHistoryItem[] = [];
+    for (const msg of messages) {
+      if (msg.question) {
+        history.push({ role: "user", content: msg.question });
+      }
+      if (msg.answer) {
+        history.push({ role: "assistant", content: msg.answer });
+      }
+    }
+    const recentHistory = history.slice(-6);
+
     // Ensure panel is open when sending a message
     setIsOpen(true);
     setIsLoading(true);
@@ -55,7 +67,7 @@ export const AIAssistantProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: questionText, language: lang }),
+        body: JSON.stringify({ message: questionText, language: lang, history: recentHistory }),
       });
 
       if (!res.ok) {

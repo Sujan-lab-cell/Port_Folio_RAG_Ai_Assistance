@@ -52,6 +52,12 @@ export function AboutClient() {
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3.5 py-1 text-xs font-mono font-medium text-emerald-300 border border-emerald-500/30">
                   <GraduationCap size={13} className="text-emerald-400" /> CGPA {portfolioData.about.education.cgpa}
                 </span>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-mono font-semibold text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition"
+                >
+                  <span>Contact Me →</span>
+                </Link>
               </div>
               <h2 className="text-2xl font-bold font-mono tracking-tight text-white md:text-3xl">
                 {ui.aboutPage.headline}
@@ -167,10 +173,9 @@ export function AboutClient() {
             </div>
             <Link
               href="/experience"
-              className="group inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-cyan-600 hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300 transition"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-semibold text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition"
             >
-              <span>{ui.nav.experience}</span>
-              <ArrowRight size={13} className="transition-transform duration-200 group-hover:translate-x-1" />
+              <span>View Experience →</span>
             </Link>
           </div>
 
@@ -248,9 +253,17 @@ export function AboutClient() {
             transition={{ duration: 0.5 }}
             className="rounded-2xl border border-slate-900/10 bg-white/70 p-7 backdrop-blur dark:border-white/10 dark:bg-white/[0.05]"
           >
-            <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 mb-4">
-              <Code2 size={20} />
-              <h3 className="text-xs font-mono uppercase tracking-widest font-semibold">{ui.aboutPage.techFocusHeading}</h3>
+            <div className="flex items-center justify-between gap-2 mb-4">
+              <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
+                <Code2 size={20} />
+                <h3 className="text-xs font-mono uppercase tracking-widest font-semibold">{ui.aboutPage.techFocusHeading}</h3>
+              </div>
+              <Link
+                href="/skills"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-semibold text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition"
+              >
+                <span>View Skills →</span>
+              </Link>
             </div>
             <div className="flex flex-wrap gap-2">
               {portfolioData.about.currentFocus.map((focusItem) => (
@@ -262,10 +275,9 @@ export function AboutClient() {
             <div className="mt-6 pt-4 border-t border-slate-900/10 dark:border-white/10">
               <Link
                 href="/projects"
-                className="group inline-flex items-center gap-2 text-xs font-mono font-semibold text-cyan-600 hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300 transition"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-semibold text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition"
               >
-                <span>{ui.buttons.exploreAllProjects}</span>
-                <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
+                <span>View Projects →</span>
               </Link>
             </div>
           </motion.div>
@@ -340,9 +352,17 @@ export function AboutClient() {
           transition={{ duration: 0.5 }}
           className="rounded-2xl border border-slate-900/10 bg-white/70 p-7 backdrop-blur dark:border-white/10 dark:bg-white/[0.05]"
         >
-          <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 mb-6">
-            <Heart size={20} />
-            <h3 className="text-xs font-mono uppercase tracking-widest font-semibold">{ui.aboutPage.beyondCodeHeading}</h3>
+          <div className="flex items-center justify-between gap-2 mb-6">
+            <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
+              <Heart size={20} />
+              <h3 className="text-xs font-mono uppercase tracking-widest font-semibold">{ui.aboutPage.beyondCodeHeading}</h3>
+            </div>
+            <Link
+              href="/achievements"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-semibold text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition"
+            >
+              <span>View Achievements →</span>
+            </Link>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

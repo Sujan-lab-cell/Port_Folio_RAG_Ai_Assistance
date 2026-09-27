@@ -3,6 +3,9 @@ import { performHybridRetrieval } from '@/src/lib/rag/retrieval';
 import { assembleContext } from '@/src/lib/rag/context';
 import { generateGroundedAnswer } from '@/src/lib/rag/generator';
 import { detectNavigationIntent } from '@/src/lib/navigationIntent';
+import { getAssistantMode } from '@/src/lib/assistant/mode';
+import { resolveFallbackQuery } from '@/src/lib/assistant/fallback/resolver';
+import { resolveConversationalQuery } from '@/src/lib/rag/conversationResolver';
 
 export async function POST(req: NextRequest) {
   // Stage 1: Request received
@@ -14,11 +17,53 @@ export async function POST(req: NextRequest) {
     const query = body.message || body.prompt || body.query;
     const language = body.language || 'en';
 
+    // Validate optional short-term history array (up to 6 items)
+    let history: Array<{ role: 'user' | 'assistant'; content: string }> = [];
+    if (Array.isArray(body.history)) {
+      history = body.history
+        .filter(
+          (item: any) =>
+            item &&
+            (item.role === 'user' || item.role === 'assistant') &&
+            typeof item.content === 'string' &&
+            item.content.trim().length > 0
+        )
+        .map((item: any) => ({
+          role: item.role as 'user' | 'assistant',
+          content: item.content.trim(),
+        }));
+    }
+
     if (!query || typeof query !== 'string') {
       return NextResponse.json(
         { error: 'Valid chat query/message is required.' },
         { status: 400 }
       );
+    }
+
+    // Check Assistant Operating Mode ("rag" vs "rule")
+    const assistantMode = getAssistantMode();
+
+    if (assistantMode === 'rule') {
+      const fallbackResult = resolveFallbackQuery(query);
+      let navAction: { route: string; label: string } | undefined = undefined;
+
+      if (fallbackResult.type === 'navigation') {
+        navAction = {
+          route: fallbackResult.route,
+          label: fallbackResult.label.includes('→') ? fallbackResult.label : `${fallbackResult.label} →`,
+        };
+      } else if (fallbackResult.type === 'unsupported' && fallbackResult.route) {
+        navAction = {
+          route: fallbackResult.route,
+          label: fallbackResult.label ? (fallbackResult.label.includes('→') ? fallbackResult.label : `${fallbackResult.label} →`) : 'Explore Portfolio →',
+        };
+      }
+
+      return NextResponse.json({
+        answer: fallbackResult.answer,
+        navAction,
+      });
     }
 
     // Check for navigation intent
@@ -37,14 +82,18 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Resolve conversational query/pronouns using short-term memory
+    const resolution = resolveConversationalQuery(query, history);
+    const retrievalQuery = resolution.wasResolved ? resolution.resolvedQuery : query;
+
     // Stages 2, 3, 4: Embedding, Supabase Retrieval, Reranking
-    const { topChunks, metrics: retrievalMetrics } = await performHybridRetrieval(query, 30, 5);
+    const { topChunks, metrics: retrievalMetrics } = await performHybridRetrieval(retrievalQuery, 30, 5);
 
     // Stage 5: Context Assembly
     const assembledContext = assembleContext(topChunks);
 
     // Stage 6: Grounded Answer Generation
-    const generationResult = await generateGroundedAnswer(query, assembledContext);
+    const generationResult = await generateGroundedAnswer(retrievalQuery, assembledContext);
 
     // Stage 7: Response returned
     const totalEnd = performance.now();
@@ -52,7 +101,14 @@ export async function POST(req: NextRequest) {
     const totalDurationMs = Math.round((totalEnd - totalStart) * 100) / 100;
 
     const telemetry = {
-      query,
+      originalQuery: query,
+      retrievalQuery,
+      conversationalResolution: {
+        wasResolved: resolution.wasResolved,
+        confidence: resolution.confidence,
+        resolvedQuery: resolution.resolvedQuery,
+        entity: resolution.entity,
+      },
       stage1_requestReceived: {
         timestamp: stage1_requestReceivedISO,
       },

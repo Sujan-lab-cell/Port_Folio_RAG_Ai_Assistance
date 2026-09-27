@@ -20,7 +20,7 @@ export function AIButton({ isOpen, onClick }: AIButtonProps) {
       onClick={onClick}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.95 }}
-      className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 flex items-center justify-center group cursor-pointer pointer-events-auto"
+      className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 md:bottom-6 md:right-6 z-50 flex items-center justify-center group cursor-pointer pointer-events-auto"
       aria-label="Toggle AI Portfolio Assistant"
       title={tooltipText}
     >
@@ -28,7 +28,7 @@ export function AIButton({ isOpen, onClick }: AIButtonProps) {
       <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-cyan-500 via-indigo-500 to-teal-400 opacity-60 blur-md group-hover:opacity-100 transition duration-500 animate-pulse" />
 
       {/* Button Avatar Outer Ring */}
-      <div className="relative flex items-center justify-center h-13 w-13 sm:h-14 sm:w-14 rounded-full border-2 border-cyan-400/90 bg-slate-950 p-0.5 shadow-[0_0_25px_rgba(34,211,238,0.5)] transition duration-300 group-hover:border-cyan-300">
+      <div className="relative flex items-center justify-center h-12 w-12 sm:h-13 sm:w-13 md:h-14 md:w-14 rounded-full border-2 border-cyan-400/90 bg-slate-950 p-0.5 shadow-[0_0_25px_rgba(34,211,238,0.5)] transition duration-300 group-hover:border-cyan-300">
         <div className="relative h-full w-full rounded-full overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 flex items-center justify-center">
           <Image
             src="/images/ai_robot_assistant.jpg"

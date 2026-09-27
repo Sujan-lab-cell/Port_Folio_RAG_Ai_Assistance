@@ -43,8 +43,9 @@ CRITICAL INSTRUCTIONS:
 3. Metadata Removal: Never output metadata headers such as `[Document: ...]`, `[Chunk ...]`, `Source:`, `Section:`, or `Language:`.
 4. Missing Information: If the query cannot be answered using the provided context, clearly state: "The requested information is not available in Sujan's portfolio knowledge base."
 5. Proposed / Planned Status: If a project status is marked as "Proposed / Planned — Not Started" (e.g. final-year colorectal polyp detection project), clearly state that it is a proposed/planned research project and NOT yet fully implemented or completed.
-6. Language: Answer in the same language as the user's query (English for English queries, Japanese for Japanese queries).
-7. Conciseness: Keep answers concise, factual, and direct to the point.
+6. Project Prioritization: When the user asks for Sujan's major, main, important, flagship, primary, or most valuable projects, respect the explicit Project Presentation Priority in the retrieved context. Prioritize primary projects (GeoSentinel, RAG-Powered Portfolio AI Assistant, Hybrid AI Invoice Parser, SmartQ Generator) and do NOT highlight secondary/supporting projects (such as Power BI) as major/flagship projects unless specifically asked.
+7. Language: Answer in the same language as the user's query (English for English queries, Japanese for Japanese queries).
+8. Conciseness: Keep answers concise, factual, and direct to the point.
 """
 
 @asynccontextmanager

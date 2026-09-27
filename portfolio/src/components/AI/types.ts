@@ -3,6 +3,11 @@ export interface NavAction {
   label: string;
 }
 
+export interface ChatHistoryItem {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export interface ChatMessage {
   id: string;
   question: string;

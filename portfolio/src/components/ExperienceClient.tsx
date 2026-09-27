@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { BriefcaseBusiness, CheckCircle2, ExternalLink, FolderGit2 } from "lucide-react";
 import { SectionHeading } from "@/src/components/SectionHeading";
 import { useLanguage } from "@/src/i18n";
@@ -32,6 +33,17 @@ export function ExperienceClient() {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                  {"lorUrl" in exp && exp.lorUrl && (
+                    <a
+                      href={exp.lorUrl as string}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-medium text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition"
+                    >
+                      <span>View LoR ↗</span>
+                      <ExternalLink size={13} />
+                    </a>
+                  )}
                   {"certificateUrl" in exp && exp.certificateUrl && (
                     <a
                       href={exp.certificateUrl as string}
@@ -53,6 +65,22 @@ export function ExperienceClient() {
                       <span>{ui.buttons.viewResearchPaper}</span>
                       <ExternalLink size={13} />
                     </a>
+                  )}
+                  {"projectSlug" in exp && (exp as any).projectSlug && (
+                    <Link
+                      href={`/projects/${(exp as any).projectSlug}`}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-medium text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition"
+                    >
+                      <span>View Project →</span>
+                    </Link>
+                  )}
+                  {"projectsUrl" in exp && (exp as any).projectsUrl && (
+                    <Link
+                      href={(exp as any).projectsUrl}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-medium text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition"
+                    >
+                      <span>View Projects →</span>
+                    </Link>
                   )}
                   {"github" in exp && exp.github && (
                     <a

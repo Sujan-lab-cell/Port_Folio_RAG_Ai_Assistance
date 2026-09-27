@@ -70,10 +70,10 @@ export function AIChatWindow({
         layout: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
         opacity: { duration: 0.2 },
       }}
-      className={`fixed z-50 flex flex-col rounded-2xl border border-cyan-500/30 bg-slate-950/95 shadow-[0_0_45px_rgba(34,211,238,0.25)] backdrop-blur-xl overflow-hidden pointer-events-auto ${
+      className={`fixed z-50 flex flex-col rounded-2xl border border-cyan-500/30 bg-slate-950/95 shadow-[0_0_45px_rgba(34,211,238,0.25)] backdrop-blur-xl overflow-hidden pointer-events-auto transition-all duration-300 ${
         isExpanded
-          ? "bottom-4 sm:bottom-6 right-4 sm:right-6 md:right-8 w-[calc(100vw-2rem)] sm:w-[680px] md:w-[760px] lg:w-[840px] h-[720px] max-h-[86vh]"
-          : "bottom-20 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-[410px] md:w-[440px] h-[520px] max-h-[78vh]"
+          ? "bottom-4 sm:bottom-5 md:bottom-[90px] left-3 sm:left-auto right-3 sm:right-5 md:right-6 w-[calc(100vw-24px)] sm:w-[620px] md:w-[720px] lg:w-[820px] max-w-none sm:max-w-[calc(100vw-40px)] md:max-w-[calc(100vw-48px)] h-[calc(100vh-80px)] sm:h-[640px] md:h-[680px] max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-100px)] md:max-h-[calc(100vh-110px)]"
+          : "bottom-[72px] sm:bottom-[80px] md:bottom-[90px] left-3 sm:left-auto right-3 sm:right-5 md:right-6 w-[calc(100vw-24px)] sm:w-[400px] md:w-[440px] max-w-none sm:max-w-[calc(100vw-40px)] md:max-w-[calc(100vw-48px)] h-[520px] sm:h-[540px] md:h-[580px] max-h-[calc(100vh-90px)] sm:max-h-[calc(100vh-100px)] md:max-h-[calc(100vh-110px)]"
       }`}
     >
       {/* Header Bar */}

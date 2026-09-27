@@ -71,6 +71,7 @@ export function ProjectsClient() {
   // Project references
   const polypProject = portfolioData.projects.find((p) => p.slug === "colorectal-polyp-temporal-validation");
   const geoSentinel = portfolioData.projects.find((p) => p.slug === "geosentinel");
+  const ragProject = portfolioData.projects.find((p) => p.slug === "rag-portfolio-ai-assistant");
   const flyrankProject = portfolioData.projects.find((p) => p.slug === "flyrank-search-performance-prediction");
   const smartQ = portfolioData.projects.find((p) => p.slug === "smartq-generator");
   const faceGen = portfolioData.projects.find((p) => p.slug === "ai-face-generation");
@@ -157,26 +158,27 @@ export function ProjectsClient() {
             {/* 3. Featured Project: GeoSentinel */}
             {geoSentinel && <GeoSentinelHero project={geoSentinel} />}
 
+            {/* Tier Spotlight Grid (RAG Portfolio AI Assistant & Hybrid AI Invoice Parser) */}
+            <div className="grid gap-8 lg:grid-cols-2">
+              {ragProject && <SecondaryFeaturedCard project={ragProject} icon={<BrainCircuit size={20} className="text-cyan-400" />} badge="CONVERSATIONAL RAG ENGINE" />}
+              {invoiceParser && <SecondaryFeaturedCard project={invoiceParser} icon={<FileText size={20} className="text-emerald-400" />} badge="HYBRID AI INVOICE PARSER" />}
+            </div>
+
             {/* Tier Spotlight Grid (SmartQ & AI Face Generation) */}
             <div className="grid gap-8 lg:grid-cols-2">
-              {smartQ && <SecondaryFeaturedCard project={smartQ} icon={<BrainCircuit size={20} className="text-sky-400" />} badge="MULTILINGUAL NLP PIPELINE" />}
-              {faceGen && <SecondaryFeaturedCard project={faceGen} icon={<Cpu size={20} className="text-fuchsia-400" />} badge="GENERATIVE ADVERSARIAL MODEL" />}
+              {smartQ && <CompactCaseStudyCard project={smartQ} icon={<BrainCircuit size={20} className="text-sky-400" />} badge="MULTILINGUAL NLP PIPELINE" />}
+              {faceGen && <CompactCaseStudyCard project={faceGen} icon={<Cpu size={20} className="text-fuchsia-400" />} badge="GENERATIVE ADVERSARIAL MODEL" />}
             </div>
 
-            {/* Tier Spotlight Grid (Invoice Parser & Text Anomaly Detection) */}
+            {/* Tier Spotlight Grid (Text Anomaly Detection & Car Detection) */}
             <div className="grid gap-8 lg:grid-cols-2">
-              {invoiceParser && <CompactCaseStudyCard project={invoiceParser} icon={<FileText size={20} className="text-emerald-400" />} badge="HYBRID AI INVOICE PARSER" />}
               {textAnomaly && <CompactCaseStudyCard project={textAnomaly} icon={<ShieldAlert size={20} className="text-purple-400" />} badge="LANGCHAIN & LANGGRAPH LLM AGENT" />}
-            </div>
-
-            {/* Tier Spotlight Grid (E-Commerce Dashboard & Car Detection) */}
-            <div className="grid gap-8 lg:grid-cols-2">
-              {eCommerce && <CompactCaseStudyCard project={eCommerce} icon={<BarChart3 size={20} className="text-amber-400" />} badge="BUSINESS INTELLIGENCE & ANALYTICS" />}
               {carDetection && <CompactCaseStudyCard project={carDetection} icon={<Eye size={20} className="text-blue-400" />} badge="URBAN COMPUTER VISION" />}
             </div>
 
-            {/* Tier Spotlight Grid (Banking System) */}
+            {/* Tier Spotlight Grid (E-Commerce Dashboard & Banking System) */}
             <div className="grid gap-8 lg:grid-cols-2">
+              {eCommerce && <CompactCaseStudyCard project={eCommerce} icon={<BarChart3 size={20} className="text-amber-400" />} badge="BUSINESS INTELLIGENCE & ANALYTICS" />}
               {banking && <CompactCaseStudyCard project={banking} icon={<Database size={20} className="text-indigo-400" />} badge="JAVA & RELATIONAL DBMS" />}
             </div>
           </div>

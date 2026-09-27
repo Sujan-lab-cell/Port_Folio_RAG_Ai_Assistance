@@ -11,7 +11,7 @@ export function Footer() {
             {portfolioData.name} — {portfolioData.title.split("|")[0].trim()}
           </p>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Built with Next.js, TypeScript, Tailwind CSS, Framer Motion & Lucide Icons. © {new Date().getFullYear()} Sujan K S.
+            © {new Date().getFullYear()} Sujan K S.
           </p>
         </div>
 

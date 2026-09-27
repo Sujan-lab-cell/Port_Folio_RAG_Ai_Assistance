@@ -1,4 +1,40 @@
 # Featured Technical Projects & Software Engineering Portfolio
+
+## Project Priority / Portfolio Presentation Priority
+
+When a user asks:
+- "List Sujan's major projects"
+- "What are Sujan's major projects?"
+- "What is his most valuable project?"
+- "What are his main projects?"
+- "Which projects are most important?"
+- "Tell me about his important projects"
+- "What are Sujan's flagship projects?"
+- "What are Sujan's best projects?"
+
+The assistant MUST prioritize Sujan's **PRIMARY / MAJOR PROJECTS**:
+
+1. **GeoSentinel — AI Landslide Detection and Monitoring System** (Major Computer Vision & Deep Learning project using YOLOv8-Seg for real-time terrain segmentation, risk scoring, drone video processing, and emergency alerts).
+2. **RAG-Powered Portfolio AI Assistant** (Major Generative AI & NLP system built with BGE-M3 multilingual embeddings, Supabase vector search, hybrid retrieval, Grok LLM, short-term conversation memory, reference resolution, and deployment fallback).
+3. **AI-Based Invoice Data to JSON Parser / Hybrid AI Medical Invoice & Diagnostic Report Parser** (Major Industry/Internship AI project built during AyusLab/ISIRI Technologies internship using EasyOCR, NLP, regex validation, LLM fallback, and Docker/FastAPI microservices).
+4. **SmartQ Generator — Multilingual Question Generation System** (Major NLP & Deep Learning project using T5 Transformer, speech-to-text, translation, and text-to-speech pipelines).
+
+**SECONDARY / SUPPORTING PROJECTS**:
+The following projects are secondary/supporting technical projects. They are fully valid and searchable, but should NOT be highlighted as primary/major/flagship projects unless the user explicitly asks about them:
+- **E-commerce Sales Dashboard (Power BI)** (Secondary Data Analytics / Business Intelligence dashboard project for sales performance and DAX KPI tracking).
+- **Banking Management System** (Secondary Java Swing & MySQL desktop DBMS project).
+- **Car & Pedestrian Detection** (Secondary YOLOv8 object detection project).
+- **AI Human Face Generation (WGAN-GP)** (Secondary GAN deep learning project).
+- **FlyRank Search Performance Prediction** (Industry ML internship project).
+- **AI-Based Text Anomaly Detection System** (LangChain & LangGraph project).
+
+### Project Selection Rules for Chatbot & Search:
+1. When asked for "major", "main", "flagship", "important", "best", or "most valuable" projects: Prioritize the 4 Primary Projects above (GeoSentinel, RAG Portfolio Assistant, AI Invoice Parser, SmartQ Generator). Do NOT highlight Power BI as a major project.
+2. When asked specifically about Power BI or E-commerce Sales Dashboard: Return full details of the E-commerce Sales Dashboard (Power BI) project.
+3. When asked to list "all projects": List all projects, organizing them with Primary Projects first followed by Secondary / Supporting Projects.
+
+---
+
 ## 1. Adaptive Temporal Validation Framework for Colorectal Polyp Detection (Proposed Final-Year Research Project — Status: Proposed / Planned — Not Started)
 - **Category:** Computer Vision | Deep Learning | Medical AI | Research
 - **Project Type:** Proposed Final-Year B.Tech Research Project
@@ -139,176 +175,318 @@ Clinical validation and real-world deployment would require extensive medical ev
 
 ---
 
-## 2. GeoSentinel — Deep Learning Terrain & Feature Segmentation System (Landslide Detection)
+# GeoSentinel — AI Landslide Detection and Monitoring System
 
-### Project Overview
-GeoSentinel is an AI-powered landslide detection and monitoring system designed to identify landslide regions from satellite imagery, aerial photographs, and drone video footage.
+## Project Identity
 
-The system uses YOLOv8-Seg instance segmentation to detect and segment landslide regions and integrates the model with geographic visualization, risk classification, automated alerts, video analysis, and historical detection monitoring.
+Project Name: GeoSentinel
 
-- **Category:** Artificial Intelligence | Computer Vision | Deep Learning | Disaster Management
-- **Project Type:** Real-Time Landslide Detection and Monitoring System
-- **GitHub Repository:** https://github.com/Sujan-lab-cell/GeoSentinel-Landslide-Detection-System.git
+Category: Artificial Intelligence, Computer Vision, Deep Learning, Disaster Management
 
-### Objectives
+Project Type: Real-Time Landslide Detection and Monitoring System
+
+Status: Completed
+
+GitHub:
+https://github.com/Sujan-lab-cell/GeoSentinel-Landslide-Detection-System.git
+
+GeoSentinel is Sujan K S's major Computer Vision and Deep Learning project. It is an AI-powered landslide detection and monitoring system designed to identify landslide regions from satellite imagery, aerial photographs, and drone video footage.
+
+GeoSentinel uses YOLOv8-Seg instance segmentation to detect and segment landslide regions. The system combines deep learning inference with geographic visualization, risk classification, automated alerts, video analysis, and historical detection monitoring.
+
+## Why GeoSentinel Is a Major Project
+
+GeoSentinel is one of Sujan's major academic and technical projects.
+
+It combines:
+
+- Computer Vision
+- Deep Learning
+- Object Detection
+- Instance Segmentation
+- Drone Video Analysis
+- Geographic Visualization
+- Risk Classification
+- Automated Alerting
+- Historical Monitoring
+
+It is an end-to-end AI application rather than only a machine-learning model.
+
+## Objectives
+
 - Detect landslide regions using deep-learning-based instance segmentation.
 - Provide detection confidence and risk-level classification.
-- Analyze drone video frame-by-frame for landslide detection.
+- Analyze drone video frame-by-frame.
 - Visualize detected locations using interactive maps.
-- Send automated SMS and email alerts when landslides are detected.
-- Maintain historical detection records and generate landslide heatmaps.
+- Send automated SMS and email alerts.
+- Generate audio alerts.
+- Maintain historical detection records.
+- Generate landslide heatmaps.
 
-### Dataset
-The model was trained using a custom landslide segmentation dataset assembled from public and satellite-image sources.
+## Dataset
 
-- **Total annotated images:** 821
-- **Training images:** 711
-- **Validation images:** 70
-- **Test images:** 40
-- **Initial raw collection:** 327 images
-- **Class:** `landslide`
-- **Annotation:** Polygon segmentation masks in YOLO format.
+Total annotated images: 821
 
-The project used imagery from sources including Roboflow, Kaggle Landslide4Sense, and the NASA Landslide Inventory.
+Training images: 711
 
-### Preprocessing and Augmentation
-- Automatic image orientation correction.
-- Resize to 640 × 640 pixels.
-- Horizontal flipping.
-- Rotation between -5° and +5°.
-- Brightness variation between -20% and +20%.
-- Blur augmentation up to 1.5 px.
-- Noise augmentation up to 1.33% of pixels.
+Validation images: 70
 
-### Model Architecture
-GeoSentinel uses **YOLOv8-Seg**, the segmentation variant of YOLOv8 from Ultralytics.
+Test images: 40
 
-The model performs object detection, bounding-box prediction, instance segmentation, and confidence estimation.
+Initial raw collection: 327 images
 
-### Model Configuration
-- **Pretrained model:** `yolov8n-seg.pt`
-- **Input size:** 640 × 640
-- **Task:** Instance Segmentation
-- **Classes:** 1 (`landslide`)
-- **Confidence threshold:** 0.50
-- **Optimizer:** AdamW
-- **Epochs:** 100
-- **Batch size:** 16
-- **Initial learning rate:** 0.01
-- **Final learning rate:** 0.0001
-- **Weight decay:** 0.0005
-- **Device:** NVIDIA CUDA GPU
+Class: landslide
 
-### Model Performance
-Evaluation was performed on the 40-image test set.
+Annotation: Polygon segmentation masks in YOLO format
 
-### Bounding-Box Metrics
-- **Precision:** 0.843
-- **Recall:** 0.802
-- **mAP@0.50:** 0.837
-- **mAP@0.50:0.95:** 0.448
+Dataset sources included Roboflow, Kaggle Landslide4Sense, and NASA Landslide Inventory.
+
+## Model
+
+Model: YOLOv8-Seg
+
+Pretrained model: yolov8n-seg.pt
+
+Task: Instance Segmentation
+
+Input size: 640 × 640
+
+Classes: 1 — landslide
+
+Confidence threshold: 0.50
+
+Optimizer: AdamW
+
+Epochs: 100
+
+Batch size: 16
+
+Initial learning rate: 0.01
+
+Final learning rate: 0.0001
+
+Weight decay: 0.0005
+
+Device: NVIDIA CUDA GPU
+
+## Model Performance
+
+### Bounding Box Metrics
+
+Precision: 0.843
+
+Recall: 0.802
+
+mAP@0.50: 0.837
+
+mAP@0.50:0.95: 0.448
 
 ### Segmentation Mask Metrics
-- **Precision:** 0.844
-- **Recall:** 0.679
-- **mAP@0.50:** 0.731
-- **mAP@0.50:0.95:** 0.342
 
-The results demonstrate strong landslide detection performance, while the lower mAP@0.50:0.95 values indicate that more precise localization and segmentation remain areas for improvement.
+Precision: 0.844
 
-### Dataset Bias and False Positives
-During development, the model initially showed bias toward predicting landslides because the training data contained primarily landslide images. This resulted in increased false positives and a low number of true-negative predictions.
+Recall: 0.679
 
-To address this issue, additional non-landslide background images were added to the dataset to improve the distinction between landslide and normal terrain.
+mAP@0.50: 0.731
 
-### Confusion Matrix Observations
-- **True Positives:** 69
-- **False Negatives:** 14
-- **False Positives:** 12
+mAP@0.50:0.95: 0.342
 
-### Application Workflow
-The system accepts an image or drone video as input. YOLOv8-Seg performs inference to detect and segment potential landslide regions. Detected regions receive confidence scores and risk classifications. Results can then be visualized geographically, logged for historical monitoring, and used to trigger automated alerts.
+The results show strong detection performance, while the lower mAP@0.50:0.95 values indicate that precise localization and segmentation remain areas for improvement.
 
-### Image Analysis
-Users can upload JPG or PNG images for landslide segmentation and confidence scoring.
+## Technology Stack
 
-### Drone Video Analysis
-The system can process drone video frame-by-frame and generate annotated output video.
+### Programming
 
-### Geographic Mapping
-Detected landslide locations can be displayed on an interactive **Folium and OpenStreetMap** map using geographic coordinates.
+- Python
 
-The system also represents an approximate 1 km evacuation-radius area around detected locations.
+### AI and Deep Learning
 
-### Automated Alerts
-- **SMS:** Twilio
-- **Email:** SendGrid
-- **Audio alert:** pyttsx3
+- YOLOv8-Seg
+- Ultralytics
+- Deep Learning
+- Instance Segmentation
 
-### Historical Monitoring
-Detection information is logged to a CSV-based record containing latitude, longitude, confidence score, timestamp, and risk level.
+### Computer Vision
 
-The logged detections can be used to generate a historical landslide heatmap.
+- OpenCV
 
-### Risk Classification
-The system provides three risk categories:
-- **HIGH**
-- **LOW**
-- **NONE**
+### Dataset and Annotation
+
+- Roboflow
+
+### Application
+
+- Streamlit
+
+### Geographic Visualization
+
+- Folium
+- OpenStreetMap
+
+### Communication and Alerts
+
+- Twilio — SMS alerts
+- SendGrid — email alerts
+- pyttsx3 — audio alerts
+
+### Data Processing
+
+- Pandas
+- NumPy
+
+### Hardware Acceleration
+
+- NVIDIA CUDA
+- NVIDIA GPU
+
+## Application Workflow
+
+1. User provides an image or drone video.
+2. The system preprocesses the input.
+3. YOLOv8-Seg performs landslide detection.
+4. The model generates bounding boxes, segmentation masks, and confidence scores.
+5. The application assigns a risk level.
+6. Geographic coordinates can be visualized on a map.
+7. Detection information can be stored for historical monitoring.
+8. Alerts can be generated through SMS, email, and audio.
+9. Historical detections can be visualized as a heatmap.
+
+## Image Analysis
+
+GeoSentinel supports JPG and PNG images for landslide detection and segmentation.
+
+The model identifies potential landslide regions and provides confidence information.
+
+## Drone Video Analysis
+
+GeoSentinel can process drone video frame-by-frame.
+
+The system performs landslide detection on video frames and can generate an annotated output video.
+
+## Geographic Monitoring
+
+Detected landslide locations can be displayed using Folium and OpenStreetMap.
+
+The application can represent an approximate 1 km evacuation-radius area around detected locations.
+
+## Automated Alerts
+
+SMS: Twilio
+
+Email: SendGrid
+
+Audio: pyttsx3
+
+Alerts are generated when the application detects landslide conditions according to the implemented detection and risk logic.
+
+## Historical Monitoring
+
+Detection information is stored in CSV-based records containing:
+
+- Latitude
+- Longitude
+- Confidence score
+- Timestamp
+- Risk level
+
+Historical detections can be used to generate a landslide heatmap.
+
+## Risk Classification
+
+GeoSentinel provides three risk categories:
+
+- HIGH
+- LOW
+- NONE
 
 The risk level is derived from the detection and confidence-based system implemented in the application.
 
-### Technology Stack
-- Python
-- YOLOv8-Seg
-- Ultralytics
-- OpenCV
-- Roboflow
-- Streamlit
-- Folium
-- OpenStreetMap
-- Twilio
-- SendGrid
-- pyttsx3
-- Pandas
-- NumPy
-- CUDA / NVIDIA GPU
+## Dataset Bias and False Positives
 
-### Key Features
-- Landslide detection using deep learning.
-- Instance segmentation of landslide regions.
-- Image-based analysis.
+During development, the model initially showed bias toward predicting landslides because the training dataset contained primarily landslide images.
+
+This resulted in increased false positives and fewer true-negative predictions.
+
+Additional non-landslide background images were therefore added to improve the model's ability to distinguish landslide regions from normal terrain.
+
+## Confusion Matrix Observations
+
+True Positives: 69
+
+False Negatives: 14
+
+False Positives: 12
+
+## Key Challenges
+
+- Landslide segmentation from aerial imagery.
+- Variation in lighting and image quality.
+- Camera and sensor noise.
+- False positives caused by insufficient background examples.
+- Real-time drone video processing.
+- Connecting AI predictions with geographic monitoring.
+- Connecting model predictions with emergency alert systems.
+
+## Key Features
+
+- Deep-learning-based landslide detection.
+- Instance segmentation.
+- Image analysis.
 - Drone video analysis.
 - Confidence scoring.
-- Risk-level classification.
+- Risk classification.
 - Interactive geographic visualization.
-- SMS, email, and audio alerts.
+- SMS alerts.
+- Email alerts.
+- Audio alerts.
 - Historical detection logging.
 - Landslide heatmap generation.
 
-### Real-World Use Case
+## Real-World Use Case
+
 GeoSentinel is designed as a disaster-monitoring concept for areas where continuous human observation is difficult.
 
-A potential use case is using drone or aerial imagery to identify potential landslide regions, determine their approximate geographic location and risk level, and provide automated notifications to support faster awareness and response.
+Drone or aerial imagery can be used to identify potential landslide regions, estimate their geographic location and risk level, and provide automated notifications to support faster awareness and response.
 
-### Key Challenges Addressed
-- Landslide segmentation from aerial imagery.
-- Variation in lighting and image quality.
-- Camera and sensor-related noise.
-- False positives caused by insufficient background examples.
-- Real-time processing of drone video.
-- Connecting AI predictions with geographic monitoring and emergency alerts.
+## Project Outcome
 
-### Project Outcome
 GeoSentinel demonstrates an end-to-end pipeline connecting deep-learning-based landslide segmentation with real-time monitoring, geographic visualization, automated notifications, and historical detection logging.
 
-### Future Scope
+## Future Scope
+
 - Multi-class disaster detection.
-- Integration with additional live satellite data sources.
+- Additional live satellite data sources.
 - Mobile support for field personnel.
 - Improved background and negative-sample diversity.
 - More precise segmentation and localization.
 - Expanded real-world validation across different geographic regions.
+
+## Important Conversational References
+
+When a user asks:
+
+- "Tell me about his major project"
+- "What is his major project?"
+- "What is Sujan's main project?"
+- "What is his most important project?"
+- "Tell me about his major AI project"
+- "Which project is related to landslide detection?"
+- "Which project uses YOLOv8?"
+- "Which project uses segmentation?"
+- "What project did he build for disaster monitoring?"
+
+These questions can refer to **GeoSentinel**.
+
+If the user asks:
+
+- "What technologies did it use?"
+- "What model did it use?"
+- "What dataset did it use?"
+- "How does it work?"
+- "What are its results?"
+- "Is it a good project?"
+
+and the previous conversation is about GeoSentinel, interpret **"it" / "the project" / "this project" / "its"** as GeoSentinel.
 
 
 ---
@@ -1835,43 +2013,38 @@ A concise factual summary of the internship is:
 
 ---
 
-## 8. E-Commerce Sales Dashboard
-## 7. E-commerce Sales Dashboard (Power BI)
 
-### Project Overview
+# E-commerce Sales Dashboard — Power BI
 
-**Project:** E-commerce Sales Dashboard
+## Project Identity
 
-This project is an **interactive Power BI dashboard** designed to analyze e-commerce sales performance.
+- Project Name: E-commerce Sales Dashboard
+- Category: Data Analytics / Business Intelligence
+- Project Type: Interactive Sales Analytics Dashboard
+- Technology: Microsoft Power BI
+- Language: DAX
+- Repository: https://github.com/Sujan-lab-cell/Power_Bi_lab_cell.git
 
-The dashboard provides insights into:
+## Project Overview
 
-- Revenue and sales
-- Profitability
-- Customer purchasing behavior
-- Product performance
-- Regional/state performance
-- Monthly profit trends
+Sujan built an interactive Power BI dashboard for analyzing e-commerce sales performance, profitability, customer purchasing behavior, regional performance, and product/category trends.
 
-The dashboard uses interactive visualizations and filters to help analyze business performance.
+The dashboard connects Orders and Details tables using Order ID and uses DAX measures to calculate important business KPIs.
 
-### Objective
-
-The project aims to:
+## Objectives
 
 - Analyze sales and profit trends.
 - Identify profitable and loss-making regions.
-- Understand customer purchasing behavior.
-- Evaluate category and sub-category performance.
-- Support business decision-making using interactive data visualization.
+- Analyze category and sub-category performance.
+- Understand customer payment behavior.
+- Compare sales and profitability across states.
+- Support business decision-making through interactive visualization.
 
-### Dataset
+## Dataset
 
-The project uses two connected tables: **Orders** and **Details**.
+The project uses two connected tables:
 
-### Orders Table
-
-Fields documented in the repository include:
+### Orders
 
 - Order ID
 - Customer Name
@@ -1879,233 +2052,97 @@ Fields documented in the repository include:
 - City
 - Order Date
 
-### Details Table
+### Details
 
-Fields documented in the repository include:
-
-- Amount (Sales)
+- Amount
 - Profit
 - Quantity
 - Category
 - Sub-Category
 - Payment Mode
-- ADV (Average Value)
+- ADV
 
-The two tables are connected using:
+The Orders and Details tables are connected using Order ID.
 
-```text
-Order ID
-```
+## Key KPIs
 
-### Key Performance Indicators
+The dashboard calculates:
 
-The dashboard tracks the following KPIs:
-
-- **Total Sales (Amount)**
-- **Total Quantity Sold**
-- **Total Profit**
-- **Profit Margin (%)**
-- **Average Order Value (ADV)**
-
-Additional measures used in the project include:
-
+- Total Sales
+- Total Quantity
+- Total Profit
+- Profit Margin
+- Average Order Value
 - Profit per Order
 - Sales per Unit
 - Profit Category
 
-### DAX Measures
+## DAX
 
-The repository documents the following DAX measures.
+DAX was used to create calculated business metrics including:
 
-### Total Sales
+- Total Sales
+- Total Profit
+- Total Quantity
+- Profit Margin %
+- Average Order Value
+- Profit per Order
+- Sales per Unit
+- Profit Category
 
-```DAX
-Total Sales = SUM(Details[Amount])
-```
+## Dashboard Features
 
-### Total Profit
+The dashboard contains interactive visualizations for:
 
-```DAX
-Total Profit = SUM(Details[Profit])
-```
+- Profit Margin by State
+- Profit by Month
+- Quantity by Category
+- Quantity by Payment Mode
+- Profit by Sub-Category
+- Sales vs Profit by State
 
-### Total Quantity
-
-```DAX
-Total Quantity = SUM(Details[Quantity])
-```
-
-### Profit Margin
-
-```DAX
-Profit Margin % =
-DIVIDE(
-    SUM(Details[Profit]),
-    SUM(Details[Amount]),
-    0
-)
-```
-
-### Average Order Value
-
-```DAX
-Average Order Value =
-DIVIDE(
-    SUM(Details[Amount]),
-    DISTINCTCOUNT(Orders[Order ID]),
-    0
-)
-```
-
-### Profit per Order
-
-```DAX
-Profit per Order =
-DIVIDE(
-    SUM(Details[Profit]),
-    DISTINCTCOUNT(Orders[Order ID]),
-    0
-)
-```
-
-### Sales per Unit
-
-```DAX
-Sales per Unit =
-DIVIDE(
-    SUM(Details[Amount]),
-    SUM(Details[Quantity]),
-    0
-)
-```
-
-### Profit Category
-
-```DAX
-Profit Category =
-IF(
-    [Profit Margin %] > 0,
-    "Profit",
-    IF(
-        [Profit Margin %] < 0,
-        "Loss",
-        "Neutral"
-    )
-)
-```
-
-### Dashboard Filters
-
-The dashboard provides slicers for:
+Interactive slicers are available for:
 
 - State
 - Category
 - Order Date
 
-These filters allow users to dynamically explore the sales data.
+## Business Insights
 
-### Visualizations
+The dashboard can be used to identify:
 
-The documented dashboard contains:
+- Loss-making regions.
+- Differences in profitability between states.
+- High-volume but low-profit categories.
+- Monthly profit trends.
+- Customer payment behavior.
+- Differences between sales and profit.
 
-- **Profit Margin by State**
-- **Profit by Month**
-- **Quantity by Category**
-- **Quantity by Payment Mode**
-- **Profit by Sub-Category**
-- **Sales vs Profit by State**
+## Technology Stack
 
-### Dashboard Features
+- Microsoft Power BI
+- DAX
+- Data Modeling
 
-The repository documents these dashboard features:
+## Project Outcome
 
-- Interactive slicers
-- Conditional formatting using Red–Yellow–Green logic
-- Clean dashboard UI
-- Dynamic filtering
+The project demonstrates practical experience in business intelligence, data visualization, DAX-based KPI development, data modeling, and interactive dashboard development.
 
-### Key Business Insights
+## Portfolio Summary
 
-The project documentation identifies several observations:
+Sujan built an interactive Power BI dashboard to analyze e-commerce sales, profitability, customer purchasing behavior, regional performance, and product trends.
 
-### Regional profitability
+## Interview Summary
 
-Some regions can be loss-making despite generating high sales.
+"I built an interactive Power BI dashboard for e-commerce sales analysis. I connected Orders and Details tables using Order ID, created DAX measures for sales, profit, profit margin, and average order value, and developed interactive visualizations to analyze state, category, payment mode, sub-category, and monthly performance."
 
-### State-level margins
-
-Profit margins vary across states.
-
-### Category performance
-
-Some categories have high sales/quantity volume but relatively low profit.
-
-### Payment behavior
-
-COD and UPI are documented as the most commonly used payment modes in the analyzed dataset.
-
-### Monthly trends
-
-Monthly profit shows fluctuations over time.
-
-### Business Use
-
-The dashboard can be used to:
-
-- Identify loss-making regions.
-- Examine state-level profitability.
-- Compare sales with profit.
-- Analyze category and sub-category performance.
-- Monitor monthly profit trends.
-- Examine customer payment behavior.
-- Support data-driven business decisions.
-
-### Tools and Technologies
-
-- **Microsoft Power BI**
-- **DAX**
-- **Data Modeling**
-
-### Dashboard Assets
-
-The GitHub repository contains dashboard-related images:
-
-```text
-cm_Dash.png
-profit.png
-loss.png
-```
-
-`cm_Dash.png` is the main dashboard preview.
-
-`profit.png` represents a positive/high-performance profit scenario.
-
-`loss.png` represents a negative/loss scenario used for business issue detection.
-
-### Portfolio Summary
-
-> Built an interactive E-commerce Sales Dashboard in Power BI to analyze sales, profit, customer purchasing behavior, regional performance, and product/category trends. Created DAX measures for sales, profit, quantity, profit margin, average order value, profit per order, and sales per unit, with interactive slicers and business-focused visualizations.
-
-### Interview Summary
-
-A concise explanation:
-
-> I built an interactive Power BI dashboard for e-commerce sales analysis. I connected Orders and Details tables using Order ID, created DAX measures for important business KPIs such as sales, profit, profit margin, and average order value, and built visuals for state, category, payment mode, sub-category, and monthly performance. The dashboard was designed to help identify loss-making regions and understand profitability patterns.
-
-### Repository
-
-GitHub:
+## Repository
 
 https://github.com/Sujan-lab-cell/Power_Bi_lab_cell.git
 
-### Source Notes
+## Source Limitation
 
-This knowledge file is based on the current repository README and repository contents.
-
-The project documentation does **not** establish exact numerical KPI totals, dashboard refresh frequency, dataset date range, number of customers/orders, or a quantified business impact. Those details should not be added to the portfolio chatbot unless supported by another source.
-
-
----
+The available project documentation does not establish exact numerical KPI totals, dataset date range, number of customers or orders, dashboard refresh frequency, or quantified business impact.
 
 ### 8. Car & Pedestrian Detection using YOLOv8
 
@@ -2710,3 +2747,121 @@ https://github.com/Sujan-lab-cell/Banking-Management--System-Java-based-DBMS-pro
 ### Source Notes
 
 This knowledge file is based on the repository README. It does not add unverified claims about performance, number of users, deployment, security hardening beyond the documented issues, or production usage.
+
+---
+
+## 10. RAG-Powered Portfolio AI Assistant
+
+### Project Overview
+Built an AI-powered conversational assistant for my portfolio website that allows visitors to ask natural-language questions about my profile, education, skills, projects, internships, achievements, and technical experience.
+
+The assistant uses Retrieval-Augmented Generation (RAG) to retrieve relevant portfolio information from a structured Markdown knowledge base before generating grounded responses.
+
+The system also supports short-term conversational memory and a lightweight conversational reference resolver so follow-up questions can understand previous context.
+
+- **Category:** Artificial Intelligence | Generative AI | NLP | RAG | LLM
+- **Project Type:** Conversational Retrieval-Augmented Generation (RAG) System
+- **GitHub Repository:** https://github.com/Sujan-lab-cell/Port_Folio.git
+
+### Architecture
+The end-to-end technical architecture follows this structured processing pipeline:
+
+User Query → Short-Term Conversation History → Navigation Intent Detection → Conversational Reference Resolution → BGE-M3 Embedding → Supabase Vector Search → Hybrid Retrieval / Reranking → Context Assembly → Grok LLM → Grounded Response
+
+### Knowledge Base
+The portfolio knowledge is maintained as a structured Markdown knowledge base across separate English (`knowledge/en/`) and Japanese (`knowledge/ja/`) directories.
+
+Knowledge domains include:
+- Profile & Bio
+- Education
+- Technical Skills
+- Projects Portfolio
+- Work Experience & Internships
+- Certifications & Achievements
+- Resumes (English & Japanese)
+
+### Embedding Model
+- **Model:** BAAI/bge-m3
+- **Framework:** Sentence Transformers & Python Embedding Service
+- **Purpose:** Converts portfolio knowledge Markdown chunks and incoming user queries into high-dimensional dense vector embeddings for semantic retrieval across English and Japanese text.
+
+### Vector Search
+- **Vector Database:** Supabase (pgvector)
+- **Pipeline Components:**
+  - Markdown knowledge ingestion
+  - Document chunking
+  - BGE-M3 dense vector generation
+  - Supabase vector similarity search
+  - Hybrid retrieval
+  - Reciprocal Rank Fusion (RRF) reranking
+  - Context assembly
+  - Grounded LLM generation
+
+### Conversational Memory
+The assistant maintains short-term conversation history by sending up to the 6 most recent user and assistant messages to the `/api/chat` endpoint. This allows the system to contextualize follow-up questions using recent dialogue turns without requiring persistent user session databases.
+
+### Reference Resolution
+A lightweight local resolver resolves conversational references in follow-up questions without invoking an expensive LLM call for every turn.
+
+Supported reference resolution terms include:
+- "it"
+- "this project"
+- "that project"
+- "there"
+
+The resolver maps references to the most recent compatible entity from the conversation history using deterministic recency rules.
+
+Important Resolution Rules:
+1. **Explicit Entity Priority:** Explicit entity names in the current query take precedence over conversation history (e.g., if history contains SmartQ Generator but query asks "What technologies did GeoSentinel use?", GeoSentinel is preserved).
+2. **Singular Reference Resolution:** Singular references ("it", "this project", "that project", "there") resolve to the most recent compatible entity in context.
+3. **Plural Reference Safety:** Plural references ("them", "these", "those") are preserved and never collapsed into a single entity.
+4. **No-Context Safety:** Queries lacking conversational context or matching entities remain un-rewritten to prevent hallucinated entity substitution.
+
+### Navigation Intent
+The assistant includes an intent detection layer that identifies user navigation requests (e.g., "Show me his projects", "Open the experience page", "Show me his skills"). When detected, the system immediately returns structured navigation routing actions (`navAction`) to direct the user to the requested portfolio page.
+
+### Deployment Fallback
+The assistant supports dual operating modes controlled via an environment variable (`AI_ASSISTANT_MODE`):
+- `AI_ASSISTANT_MODE=rag`: Uses the complete local RAG pipeline (BGE-M3 + Supabase + Grok).
+- `AI_ASSISTANT_MODE=rule`: Provides a lightweight, deployment-safe rule fallback using structured portfolio knowledge and deterministic resolution for serverless environments (such as Vercel) where local Python embedding services and vector databases are unavailable. The rule mode operates independently without calling BGE-M3, Supabase, Grok, or Python services.
+
+### Technology Stack
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **AI / NLP:** Retrieval-Augmented Generation (RAG), Natural Language Processing (NLP), Large Language Models (LLM), Semantic Search, Conversational Reference Resolution
+- **Embeddings:** BAAI/bge-m3, Sentence Transformers
+- **Vector Search & Storage:** Supabase, pgvector, Hybrid Retrieval, Reranking
+- **LLM:** Grok
+- **Backend:** Next.js API Routes, Python Embedding Service
+- **Knowledge Management:** Markdown, Structured Knowledge Base
+
+### Key Features
+- Portfolio-specific RAG system
+- Semantic vector search
+- BGE-M3 multilingual embeddings
+- Supabase vector search & hybrid reranking
+- Grounded LLM responses
+- Short-term conversational memory
+- Recency-based conversational reference resolution
+- Navigation intent detection
+- English and Japanese knowledge base support
+- Deployment-safe rule-based fallback
+
+### Validation
+The conversational RAG system has been validated across a comprehensive 37-test suite:
+- Conversational resolver tests: 7/7 passed
+- Conversational RAG integration tests: 6/6 passed
+- Conversational edge-case tests: 24/24 passed
+- Total test suite: 37/37 passed (100%)
+- TypeScript typecheck: PASSED (`npx tsc --noEmit`)
+- Production build: PASSED (`npm run build`)
+
+Test scenarios verified: single-project follow-up questions, "it" references, "this project" references, "there" references, topic switching, explicit entity overrides, multiple entities, plural references, no-context queries, navigation intent routing, direct factual queries, rule fallback mode, English query processing, and Japanese query processing.
+
+### Project Outcome
+Demonstrates an end-to-end conversational RAG system for a personal portfolio, combining structured Markdown knowledge management, multilingual embeddings, vector search, hybrid retrieval, grounded LLM generation, short-term conversational memory, reference resolution, navigation intent routing, and deployment fallback architecture.
+
+### Portfolio Summary
+> Built a conversational RAG-powered portfolio assistant using BGE-M3 multilingual embeddings, Supabase vector search, hybrid retrieval, Grok LLM generation, short-term conversation memory, conversational reference resolution, and navigation intent detection. Added a deployment-safe rule-based fallback architecture for environments where the complete RAG infrastructure is unavailable.
+
+### Interview Summary
+> I built a RAG-powered AI assistant for my portfolio. The system stores my portfolio information as structured Markdown, converts the knowledge into BGE-M3 embeddings, retrieves relevant information using Supabase vector search and hybrid retrieval, and passes the retrieved context to a Grok-based generation layer. I also implemented short-term conversation memory and a lightweight reference resolver so follow-up questions such as 'What technologies did it use?' can refer to the project discussed previously. I also added a rule-based fallback mode for deployment environments where the complete RAG infrastructure is unavailable.
