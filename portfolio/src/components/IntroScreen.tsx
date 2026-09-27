@@ -1,21 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   BrainCircuit,
   ArrowRight,
   Sparkles,
   Terminal,
-  Zap,
-  ShieldCheck,
-  Cpu,
-  Layers,
-  Code2,
   Globe,
   Radio,
-  Bot,
-  Workflow,
 } from "lucide-react";
 import { useLanguage } from "@/src/i18n";
 
@@ -26,54 +19,26 @@ interface IntroScreenProps {
 export function IntroScreen({ onEnter }: IntroScreenProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { lang, setLang, ui, portfolioData } = useLanguage();
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+
   const [isHovered, setIsHovered] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  const ROLES = ui.introScreen.roles;
-
-  const HIGHLIGHT_BADGES = [
-    { label: ui.introScreen.highlightBadges.ros2, icon: Bot },
-    { label: ui.introScreen.highlightBadges.automation, icon: Workflow },
-    { label: ui.introScreen.highlightBadges.rl, icon: BrainCircuit },
-    { label: ui.introScreen.highlightBadges.yolo, icon: Cpu },
-    { label: ui.introScreen.highlightBadges.t5, icon: Layers },
-    { label: ui.introScreen.highlightBadges.wgan, icon: Sparkles },
-    { label: ui.introScreen.highlightBadges.pytorch, icon: Code2 },
-  ];
-
-  // Reset typewriter index on language change to prevent out of bounds
+  // Fast initial progress fill (purely visual animation)
   useEffect(() => {
-    setRoleIndex(0);
-    setDisplayText("");
-    setIsDeleting(false);
-  }, [lang]);
-
-  // Typewriter effect for agency-style rotating roles
-  useEffect(() => {
-    const currentRole = ROLES[roleIndex] || ROLES[0];
-    const typingSpeed = isDeleting ? 30 : 70;
-
-    const timer = setTimeout(() => {
-      if (!isDeleting) {
-        setDisplayText(currentRole.substring(0, displayText.length + 1));
-        if (displayText.length + 1 === currentRole.length) {
-          setTimeout(() => setIsDeleting(true), 2200);
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
         }
-      } else {
-        setDisplayText(currentRole.substring(0, displayText.length - 1));
-        if (displayText.length - 1 === 0) {
-          setIsDeleting(false);
-          setRoleIndex((prev) => (prev + 1) % ROLES.length);
-        }
-      }
-    }, typingSpeed);
+        return prev + 10;
+      });
+    }, 40);
+    return () => clearInterval(interval);
+  }, []);
 
-    return () => clearTimeout(timer);
-  }, [displayText, isDeleting, roleIndex, ROLES]);
-
-  // Keyboard shortcut (Press ENTER key to launch)
+  // Keyboard listener: Press ENTER to enter portfolio
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
@@ -84,14 +49,16 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onEnter]);
 
-  // 3D Organic Particle & Neural Wave Mesh Canvas Animation
+  // 3D Organic Wave & Particle Mesh Canvas
   useEffect(() => {
+    if (shouldReduceMotion) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId: number;
+    let animId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
@@ -102,7 +69,6 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
     };
     window.addEventListener("resize", handleResize);
 
-    // Mouse tracking for 3D rotation & force-field
     const mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
     const handleMouseMove = (e: MouseEvent) => {
       mouse.targetX = e.clientX;
@@ -110,7 +76,6 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
     };
     window.addEventListener("mousemove", handleMouseMove);
 
-    // 3D Grid parameters
     const cols = Math.min(Math.floor(width / 35), 45);
     const rows = Math.min(Math.floor(height / 35), 30);
     const spacing = 45;
@@ -119,16 +84,13 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Lerp mouse
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
       const rotX = (mouse.y - height / 2) * 0.0006;
       const rotY = (mouse.x - width / 2) * 0.0006;
-
       time += 0.02;
 
-      // Render faint 3D particle wave grid
       const gridPoints: Array<Array<{ x: number; y: number; z: number; px: number; py: number }>> = [];
 
       for (let r = 0; r < rows; r++) {
@@ -137,21 +99,17 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
           const x0 = (c - cols / 2) * spacing;
           const z0 = (r - rows / 2) * spacing;
 
-          // Wave elevation math
           const distFromCenter = Math.sqrt(x0 * x0 + z0 * z0);
           const wave1 = Math.sin(distFromCenter * 0.02 - time * 1.5) * 25;
           const wave2 = Math.cos((x0 + z0) * 0.015 + time) * 15;
           const y0 = wave1 + wave2;
 
-          // 3D Rotation Y
           const x1 = x0 * Math.cos(rotY) + z0 * Math.sin(rotY);
           const z1 = -x0 * Math.sin(rotY) + z0 * Math.cos(rotY);
 
-          // 3D Rotation X
           const y2 = y0 * Math.cos(rotX) - z1 * Math.sin(rotX);
           const z2 = y0 * Math.sin(rotX) + z1 * Math.cos(rotX);
 
-          // Perspective projection
           const fov = 450;
           const scale = fov / (fov + z2 + 300);
           const px = x1 * scale + width / 2;
@@ -161,12 +119,10 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
         }
       }
 
-      // Draw wireframe connecting lines
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const pt = gridPoints[r][c];
 
-          // Right neighbor line
           if (c < cols - 1) {
             const rightPt = gridPoints[r][c + 1];
             const alpha = Math.max(0, 0.12 - pt.z * 0.0003);
@@ -178,19 +134,17 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
             ctx.stroke();
           }
 
-          // Bottom neighbor line
           if (r < rows - 1) {
             const bottomPt = gridPoints[r + 1][c];
             const alpha = Math.max(0, 0.12 - pt.z * 0.0003);
             ctx.beginPath();
             ctx.moveTo(pt.px, pt.py);
             ctx.lineTo(bottomPt.px, bottomPt.py);
-            ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+            ctx.strokeStyle = `rgba(129, 140, 248, ${alpha})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
 
-          // Node points
           if ((r + c) % 2 === 0) {
             const nodeRadius = Math.max(1, 2.2 - pt.z * 0.002);
             ctx.beginPath();
@@ -201,7 +155,7 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
         }
       }
 
-      animationFrameId = requestAnimationFrame(render);
+      animId = requestAnimationFrame(render);
     };
 
     render();
@@ -209,9 +163,9 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
     return () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animId);
     };
-  }, []);
+  }, [shouldReduceMotion]);
 
   return (
     <motion.div
@@ -219,24 +173,26 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
       animate={{ opacity: 1 }}
       exit={{
         opacity: 0,
-        scale: 1.08,
-        filter: "blur(16px)",
-        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+        scale: shouldReduceMotion ? 1 : 1.05,
+        filter: shouldReduceMotion ? "none" : "blur(12px)",
+        transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
       }}
-      className="fixed inset-0 z-[100] flex flex-col justify-between overflow-hidden bg-[#02040a] text-white selection:bg-cyan-500/30 selection:text-cyan-200"
+      className="fixed inset-0 z-[100] flex flex-col justify-between overflow-x-hidden overflow-y-auto bg-[#030712] text-white selection:bg-cyan-500/30 selection:text-cyan-200"
     >
-      {/* 3D Organic Wave Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />
+      {/* Background Interactive Particle Wave Canvas */}
+      {!shouldReduceMotion && (
+        <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />
+      )}
 
-      {/* Cinematic Dark Ambient Gradients */}
-      <div className="absolute top-0 left-1/4 h-[500px] w-[500px] rounded-full bg-cyan-500/10 blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 h-[500px] w-[500px] rounded-full bg-indigo-600/15 blur-[160px] pointer-events-none" />
+      {/* Futuristic Ambient Atmosphere & Radial Glows */}
+      <div className="absolute top-0 left-1/3 h-[500px] w-[500px] rounded-full bg-cyan-500/10 blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/3 h-[500px] w-[500px] rounded-full bg-indigo-600/15 blur-[170px] pointer-events-none" />
 
-      {/* Minimal Agency Top Bar */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10 border-b border-white/10 bg-slate-950/40 backdrop-blur-md">
+      {/* Top Bar Navigation & Telemetry */}
+      <header className="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10 border-b border-white/10 bg-slate-950/50 backdrop-blur-md">
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs tracking-[0.25em] text-cyan-400 font-bold uppercase">
-            SUJAN.AI // 01
+            SUJAN.AI // SYSTEM 01
           </span>
           <span className="hidden sm:inline-block h-3 w-px bg-white/20" />
           <span className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400">
@@ -245,14 +201,26 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
           </span>
         </div>
 
+        {/* HUD Metadata Overlay (Desktop) */}
+        <div className="hidden lg:flex items-center gap-6 text-[10px] font-mono text-slate-400 tracking-wider">
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>NEURAL INTERFACE: <strong className="text-cyan-300">ONLINE</strong></span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span>RAG CORE: <strong className="text-cyan-300">ACTIVE</strong></span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 animate-pulse" />
+            <span>SYSTEM STATUS: <strong className="text-cyan-300">READY</strong></span>
+          </div>
+        </div>
+
         <div className="flex items-center gap-4 sm:gap-6 font-mono text-xs text-slate-400">
           <div className="hidden md:flex items-center gap-2">
             <Globe size={13} className="text-cyan-400" />
             <span>MANGALORE 12.91° N</span>
-          </div>
-          <div className="flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 bg-white/5">
-            <Zap size={13} className="text-amber-300" />
-            <span>{ui.introScreen.latency}</span>
           </div>
 
           {/* Language Toggle */}
@@ -281,78 +249,75 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
         </div>
       </header>
 
-      {/* Hero Visual Body */}
-      <main className="relative z-10 my-auto flex flex-col items-center justify-center px-4 py-6 text-center">
-        {/* Top Floating Badge */}
+      {/* Main Center Stage */}
+      <main className="relative z-10 my-auto flex flex-col items-center justify-center px-4 py-8 text-center">
+        {/* Top Neural Badge */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8 inline-flex items-center gap-3 rounded-full border border-cyan-500/40 bg-cyan-950/40 px-5 py-2 text-xs font-mono tracking-widest text-cyan-300 backdrop-blur-xl shadow-[0_0_25px_rgba(34,211,238,0.2)]"
+          className="mb-6 inline-flex items-center gap-3 rounded-full border border-cyan-500/40 bg-cyan-950/40 px-5 py-2 text-xs font-mono tracking-widest text-cyan-300 backdrop-blur-xl shadow-[0_0_25px_rgba(34,211,238,0.2)]"
         >
           <BrainCircuit size={16} className="text-cyan-400 animate-pulse" />
           <span className="uppercase">{ui.introScreen.badge}</span>
         </motion.div>
 
-        {/* Oversized Agency Typography */}
+        {/* Line 1: Name Reveal */}
         <motion.h1
-          initial={{ opacity: 0, scale: 0.94 }}
+          initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="max-w-7xl text-6xl sm:text-8xl md:text-9xl lg:text-[9.5rem] font-black tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-cyan-300 drop-shadow-[0_0_45px_rgba(34,211,238,0.3)]"
+          className="max-w-7xl text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-cyan-300 drop-shadow-[0_0_45px_rgba(34,211,238,0.3)] uppercase"
         >
           {portfolioData.name}
         </motion.h1>
 
-        {/* Dynamic Typewriter Subtitle */}
+        {/* Line 2: Title Reveal */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-6 flex h-10 items-center justify-center font-mono text-lg sm:text-2xl md:text-3xl font-bold tracking-wider text-cyan-400"
+          className="mt-4 flex items-center justify-center font-mono text-lg sm:text-2xl md:text-3xl font-bold tracking-wider text-cyan-400"
         >
           <Terminal size={22} className="mr-3 text-cyan-400 shrink-0" />
-          <span>{displayText}</span>
-          <span className="ml-1 inline-block h-7 w-1 bg-cyan-400 animate-pulse" />
+          <span>{portfolioData.title}</span>
         </motion.div>
 
-        {/* Tagline */}
+        {/* Line 3: Specializations Reveal */}
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-6 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-lg font-normal"
+          transition={{ duration: 0.6, delay: 0.45 }}
+          className="mt-4 max-w-3xl font-mono text-xs sm:text-sm font-semibold tracking-widest text-slate-300 uppercase"
         >
-          {portfolioData.tagline}
+          COMPUTER VISION <span className="text-cyan-400 font-bold mx-2">//</span> NLP <span className="text-cyan-400 font-bold mx-2">//</span> GENERATIVE AI <span className="text-cyan-400 font-bold mx-2">//</span> ROBOTICS
         </motion.p>
 
-        {/* Badges / Tech Telemetry */}
+        {/* Initialization Progress Bar */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-8 flex flex-wrap justify-center gap-3 max-w-2xl"
+          transition={{ duration: 0.6, delay: 0.55 }}
+          className="mt-8 w-full max-w-xs space-y-1.5 font-mono text-[11px] text-cyan-300"
         >
-          {HIGHLIGHT_BADGES.map((badge) => {
-            const Icon = badge.icon;
-            return (
-              <div
-                key={badge.label}
-                className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-xs font-mono text-slate-300 backdrop-blur transition hover:border-cyan-400 hover:text-cyan-200 hover:bg-cyan-500/10 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"
-              >
-                <Icon size={14} className="text-cyan-400" />
-                <span>{badge.label}</span>
-              </div>
-            );
-          })}
+          <div className="flex justify-between items-center text-[10px] text-slate-400 tracking-wider">
+            <span>INITIALIZING NEURAL INTERFACE...</span>
+            <span className="font-bold text-cyan-300">{progress}%</span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-slate-900 overflow-hidden border border-cyan-500/30 p-0.5">
+            <div
+              style={{ width: `${progress}%` }}
+              className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 transition-all duration-300 shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+            />
+          </div>
         </motion.div>
 
-        {/* Agency Magnetic "ENTER PORTFOLIO" Action */}
+        {/* Primary CTA: ENTER PORTFOLIO */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.65 }}
-          className="mt-12 flex flex-col items-center gap-3"
+          transition={{ duration: 0.7, delay: 0.7 }}
+          className="mt-10 flex flex-col items-center gap-3"
         >
           <button
             onClick={onEnter}
@@ -383,8 +348,8 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
         </motion.div>
       </main>
 
-      {/* Minimal Agency Footer */}
-      <footer className="relative z-10 flex items-center justify-between px-6 py-4 sm:px-10 border-t border-white/10 bg-slate-950/40 backdrop-blur-md text-xs font-mono text-slate-400">
+      {/* Footer */}
+      <footer className="relative z-10 flex items-center justify-between px-6 py-4 sm:px-10 border-t border-white/10 bg-slate-950/50 backdrop-blur-md text-xs font-mono text-slate-400">
         <div className="flex items-center gap-6">
           <span>SUJAN K S © {new Date().getFullYear()}</span>
           <span className="hidden sm:inline-block">•</span>

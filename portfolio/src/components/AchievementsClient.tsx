@@ -31,7 +31,7 @@ const CATEGORY_TABS = [
   { key: "competitions", label: "Competitions", categoryName: "Hackathons & Competitions", icon: Zap },
   { key: "courses", label: "Courses", categoryName: "Courses & Learning", icon: GraduationCap },
   { key: "workshops", label: "Workshops", categoryName: "Workshops", icon: Layers },
-  { key: "professional", label: "Professional", categoryName: "Internships & Professional", icon: Briefcase },
+  { key: "professional", label: "Internship Certificate", categoryName: "Internship Certificate", icon: Briefcase },
   { key: "projects", label: "Projects", categoryName: "Project Credentials", icon: FolderGit2 },
   { key: "activities", label: "Activities", categoryName: "Leadership & Activities", icon: Users },
 ];

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   Download,
@@ -11,6 +12,7 @@ import {
   RotateCcw,
   FileText,
   ExternalLink,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntroScreen } from "@/src/components/IntroScreen";
@@ -113,6 +115,21 @@ export function HomeClient() {
               transition={{ duration: 0.8 }}
               className="flex flex-col"
             >
+              <div className="mb-4 flex items-center gap-4">
+                <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-full border-2 border-cyan-400/80 p-1 shadow-[0_0_25px_rgba(34,211,238,0.4)] backdrop-blur-md bg-slate-950/80">
+                  <div className="relative h-full w-full overflow-hidden rounded-full">
+                    <Image
+                      src="/certificates/WhatsApp Image 2026-09-27 at 12.16.37 AM.jpeg"
+                      alt="Sujan K S"
+                      fill
+                      priority
+                      className="object-cover object-top"
+                    />
+                  </div>
+                  <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-slate-950 bg-emerald-400 animate-pulse" />
+                </div>
+              </div>
+
               <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-slate-950 dark:text-white leading-[1.05]">
                 {portfolioData.name}
               </h1>
@@ -137,14 +154,12 @@ export function HomeClient() {
                 >
                   <Download size={18} /> {ui.buttons.downloadResume}
                 </a>
-                <a
-                  href="/images/SUJAN_KS_Inter (3).pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/about"
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-6 py-3.5 text-sm font-semibold text-cyan-700 dark:text-cyan-300 backdrop-blur transition hover:border-cyan-400 hover:bg-cyan-500/20 hover:scale-105 cursor-pointer"
                 >
-                  <FileText size={18} /> {ui.buttons.japaneseResume} <ExternalLink size={16} />
-                </a>
+                  <User size={18} /> {lang === "ja" ? "自己紹介" : "About Me"} <ArrowRight size={16} />
+                </Link>
                 <Link
                   href="/projects"
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-900/15 bg-white/50 px-6 py-3.5 text-sm font-semibold text-slate-800 backdrop-blur transition hover:border-cyan-500/60 hover:bg-cyan-400/10 dark:border-white/15 dark:bg-white/5 dark:text-white"

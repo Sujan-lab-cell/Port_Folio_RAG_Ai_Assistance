@@ -5,191 +5,18 @@ import { motion } from "framer-motion";
 import { Bot, Sparkles } from "lucide-react";
 import { portfolioData } from "@/src/data/portfolio";
 import { useLanguage } from "@/src/i18n";
+import { useAIAssistant } from "@/src/components/AI/AIAssistant";
 
 interface AIRobotHeroCanvasProps {
   onAskQuestion?: (prompt: string) => void;
 }
 
-interface ChatMessage {
-  id: string;
-  question: string;
-  answer: string | null;
-  error?: string | null;
-  isLoading?: boolean;
-}
-
-function FormattedMarkdown({ content }: { content: string | null }) {
-  if (!content) return null;
-
-  const renderInline = (text: string) => {
-    const parts = text.split(/(\*\*.*?\*\*)/g);
-    return parts.map((part, i) => {
-      if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
-        return (
-          <strong key={i} className="font-semibold text-cyan-200">
-            {part.slice(2, -2)}
-          </strong>
-        );
-      }
-      return part;
-    });
-  };
-
-  const lines = content.split('\n');
-
-  return (
-    <div className="space-y-1 text-slate-200 leading-relaxed font-sans text-[11px] sm:text-xs">
-      {lines.map((line, idx) => {
-        const trimmed = line.trim();
-        if (!trimmed) {
-          return <div key={idx} className="h-1" />;
-        }
-
-        if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {
-          const bulletText = trimmed.replace(/^[\bullet\-\*]\s*/, '');
-          return (
-            <div key={idx} className="flex items-start gap-1.5 pl-1 my-0.5">
-              <span className="text-cyan-400 font-bold shrink-0 mt-0.5">•</span>
-              <span className="flex-1 min-w-0">{renderInline(bulletText)}</span>
-            </div>
-          );
-        }
-
-        const numMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-        if (numMatch) {
-          const [, num, itemText] = numMatch;
-          return (
-            <div key={idx} className="flex items-start gap-1.5 pl-1 my-0.5">
-              <span className="font-mono font-bold text-cyan-400 shrink-0 mt-0.5">{num}.</span>
-              <span className="flex-1 min-w-0">{renderInline(itemText)}</span>
-            </div>
-          );
-        }
-
-        if (trimmed.startsWith('#')) {
-          const headingText = trimmed.replace(/^#+\s*/, '');
-          return (
-            <div key={idx} className="font-mono font-bold text-cyan-300 text-[11px] sm:text-xs mt-1 mb-0.5">
-              {renderInline(headingText)}
-            </div>
-          );
-        }
-
-        return (
-          <p key={idx} className="my-0.5">
-            {renderInline(line)}
-          </p>
-        );
-      })}
-    </div>
-  );
-}
-
 export function AIRobotHeroCanvas({ onAskQuestion }: AIRobotHeroCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const scrollRef = useRef<HTMLDivElement | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [hovered, setHovered] = useState(false);
+  const [, setHovered] = useState(false);
   const { lang } = useLanguage();
-
-  // Robot speech bubble RAG chat conversation history state
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [customInput, setCustomInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  // i18n Labels
-  const titleText = lang === "ja" ? "AIポートフォリオアシスタント" : "AI Portfolio Assistant";
-  const placeholderText = lang === "ja" ? "スジャンについて何でも聞いてください..." : "Ask anything about Sujan...";
-  const askButtonText = lang === "ja" ? "質問" : "Ask";
-  const loadingText = lang === "ja" ? "回答を生成しています..." : "Generating grounded response...";
-  const greetingText = lang === "ja"
-    ? "「こんにちは！スジャンのAIアシスタントです。何でも質問してください！」"
-    : "“Hi! I’m Sujan’s AI Assistant — Ask me anything about his work!”";
-
-  const quickPrompts = lang === "ja"
-    ? [
-        "スジャンについて教えて",
-        "どんなプロジェクトを開発しましたか？",
-        "スキルを教えて",
-        "AIプロジェクトを見る",
-        "コンピュータビジョンのプロジェクトを見る",
-        "履歴書を見る",
-      ]
-    : [
-        "Tell me about Sujan",
-        "What projects has he built?",
-        "What are his skills?",
-        "Show AI projects",
-        "Show Computer Vision projects",
-        "Show resume",
-      ];
-
-  // Auto-scroll chat area internally to latest message
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages, isLoading]);
-
-  const handleAskRobot = async (userPrompt: string) => {
-    if (!userPrompt.trim() || isLoading) return;
-    const questionText = userPrompt.trim();
-    const msgId = Date.now().toString() + Math.random().toString(36).substring(2, 5);
-
-    if (onAskQuestion) {
-      onAskQuestion(questionText);
-    }
-
-    setIsLoading(true);
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: msgId,
-        question: questionText,
-        answer: null,
-        isLoading: true,
-      },
-    ]);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: questionText, language: lang }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`Server error ${res.status}`);
-      }
-
-      const data = await res.json();
-      if (data.answer) {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === msgId ? { ...msg, answer: data.answer, isLoading: false } : msg
-          )
-        );
-      } else if (data.error) {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === msgId ? { ...msg, error: data.error, isLoading: false } : msg
-          )
-        );
-      }
-    } catch (err: any) {
-      console.error("Robot API chat error:", err);
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === msgId
-            ? { ...msg, error: err.message || "Failed to fetch response.", isLoading: false }
-            : msg
-        )
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { openAssistant } = useAIAssistant();
 
   // Canvas interactive cyber particle & hologram orbital animation
   useEffect(() => {
@@ -318,125 +145,31 @@ export function AIRobotHeroCanvas({ onAskQuestion }: AIRobotHeroCanvasProps) {
         style={{ transformStyle: "preserve-3d" }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onClick={() => openAssistant()}
         className="relative z-10 flex flex-col items-center justify-center cursor-pointer group"
       >
-        {/* Floating Holographic AI Visor Speech Tooltip */}
-        <motion.div
+        {/* Floating AI Callout Pill */}
+        <motion.button
+          onClick={(e) => {
+            e.stopPropagation();
+            openAssistant();
+          }}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute -top-28 sm:-top-32 z-30 w-80 sm:w-96 rounded-2xl border border-cyan-500/40 bg-slate-950/95 p-4 shadow-[0_0_35px_rgba(34,211,238,0.35)] backdrop-blur-xl pointer-events-auto"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="absolute -top-16 sm:-top-20 z-30 inline-flex items-center gap-2 rounded-full border border-cyan-400/40 bg-slate-950/90 px-4 py-2 text-xs font-mono font-medium text-cyan-300 shadow-[0_0_25px_rgba(34,211,238,0.3)] backdrop-blur-md hover:border-cyan-300 transition cursor-pointer"
         >
-          <div className="flex items-start gap-3">
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/30">
-              <Bot size={18} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-mono font-bold tracking-wider text-cyan-300 uppercase">
-                    {titleText}
-                  </span>
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                </div>
-                {messages.length > 0 && (
-                  <button
-                    onClick={() => setMessages([])}
-                    disabled={isLoading}
-                    className="text-[10px] font-mono text-cyan-400 hover:text-white cursor-pointer disabled:opacity-40"
-                  >
-                    {lang === "ja" ? "クリア" : "Clear"}
-                  </button>
-                )}
-              </div>
-
-              {messages.length === 0 ? (
-                <>
-                  <p className="mt-1 text-xs text-slate-200 leading-snug">
-                    {greetingText}
-                  </p>
-                  {/* Quick Prompts (Only shown in initial empty state) */}
-                  <div className="mt-3 flex flex-wrap gap-1.5 border-t border-white/10 pt-2.5">
-                    {quickPrompts.map((prompt) => (
-                      <button
-                        key={prompt}
-                        onClick={() => handleAskRobot(prompt)}
-                        disabled={isLoading}
-                        className="rounded-lg border border-cyan-500/30 bg-cyan-950/60 px-2 py-1 text-[10px] sm:text-[11px] font-mono font-medium text-cyan-200 transition hover:border-cyan-400 hover:bg-cyan-500/30 hover:text-white disabled:opacity-40 cursor-pointer"
-                      >
-                        {prompt}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div
-                  ref={scrollRef}
-                  onWheel={(e) => e.stopPropagation()}
-                  onTouchMove={(e) => e.stopPropagation()}
-                  className="mt-2 max-h-40 sm:max-h-52 overflow-y-auto pr-1.5 space-y-2 font-sans text-[11px] sm:text-xs scrollbar-thin cursor-auto pointer-events-auto select-text"
-                >
-                  {messages.map((item) => (
-                    <div key={item.id} className="rounded-lg bg-slate-900/80 p-2 border border-white/5 space-y-1">
-                      <div className="flex items-start gap-1 font-mono font-bold text-cyan-300 text-[11px]">
-                        <span className="text-slate-400 shrink-0">Q:</span>
-                        <span className="whitespace-pre-wrap text-cyan-200">{item.question}</span>
-                      </div>
-                      <div className="flex items-start gap-1 text-slate-200 leading-relaxed text-[11px] sm:text-xs">
-                        <span className="font-mono font-bold text-slate-400 shrink-0">A:</span>
-                        <div className="flex-1 min-w-0">
-                          {item.isLoading ? (
-                            <div className="flex items-center gap-1.5 text-cyan-400 font-mono animate-pulse py-0.5">
-                              <Sparkles size={13} className="animate-spin text-cyan-400 shrink-0" />
-                              <span>{loadingText}</span>
-                            </div>
-                          ) : item.error ? (
-                            <span className="text-rose-400 font-mono">{item.error}</span>
-                          ) : (
-                            <FormattedMarkdown content={item.answer} />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Custom Question Form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!customInput.trim() || isLoading) return;
-              handleAskRobot(customInput.trim());
-              setCustomInput("");
-            }}
-            className="mt-2.5 flex items-center gap-1.5"
-          >
-            <input
-              type="text"
-              value={customInput}
-              onChange={(e) => setCustomInput(e.target.value)}
-              placeholder={placeholderText}
-              disabled={isLoading}
-              className="min-w-0 flex-1 rounded-lg border border-cyan-500/30 bg-slate-900/90 px-2.5 py-1.5 text-[11px] font-mono text-white placeholder-slate-400 outline-none transition focus:border-cyan-400 disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={!customInput.trim() || isLoading}
-              className="rounded-lg bg-cyan-500 px-3 py-1.5 text-[11px] font-mono font-bold text-slate-950 transition hover:bg-cyan-400 disabled:opacity-40 disabled:hover:bg-cyan-500 cursor-pointer shrink-0"
-            >
-              {askButtonText}
-            </button>
-          </form>
-        </motion.div>
+          <Bot size={16} className="text-cyan-400 animate-pulse" />
+          <span>{lang === "ja" ? "AI Portfolio Assistantと話す 💬" : "Chat with AI Portfolio Assistant 💬"}</span>
+        </motion.button>
 
         {/* 3D Cyber Vector Robot Head & Core */}
         <div className="relative h-72 w-72 sm:h-80 sm:w-80 flex items-center justify-center">
           {/* SVG Vector Robot Helmet & Optical Visor */}
           <svg
             viewBox="0 0 200 240"
-            className="w-full h-full drop-shadow-[0_0_35px_rgba(34,211,238,0.4)]"
+            className="w-full h-full drop-shadow-[0_0_35px_rgba(34,211,238,0.4)] transition-transform duration-300 group-hover:scale-105"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >

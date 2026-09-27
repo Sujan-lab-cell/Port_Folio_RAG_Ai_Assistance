@@ -148,7 +148,7 @@ export const uiEN: UIStrings = {
     filterCompetitions: "Competitions",
     filterCourses: "Courses",
     filterWorkshops: "Workshops",
-    filterProfessional: "Professional",
+    filterProfessional: "Internship Certificate",
     filterProjects: "Projects",
     filterActivities: "Activities",
     noCredentialsFound: "No credentials found in this category.",

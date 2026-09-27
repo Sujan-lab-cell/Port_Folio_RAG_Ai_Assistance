@@ -15,7 +15,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [lang, setLangState] = useState<Language>("en");
+  const [lang, setLangState] = useState<Language>("ja");
 
   useEffect(() => {
     const savedLang = localStorage.getItem("portfolio_lang") as Language;
@@ -48,10 +48,10 @@ export const useLanguage = (): LanguageContextType => {
   if (!context) {
     // Fallback if rendered outside provider during SSG/initial render
     return {
-      lang: "en",
+      lang: "ja",
       setLang: () => {},
-      ui: uiEN,
-      portfolioData: portfolioDataEN,
+      ui: uiJA,
+      portfolioData: portfolioDataJA,
     };
   }
   return context;

@@ -378,6 +378,7 @@ export const portfolioData = {
       paperUrl: "https://sujan-lab-cell.github.io/flyrank-ml-internship/",
       github: "https://github.com/Sujan-lab-cell/flyrank-ml-internship.git",
       githubInfo: "https://github.com/Sujan-lab-cell/FlyRank_ai_info.git",
+      certificateUrl: "/certificates/flyrank-certificate-of-completion-machine-learning-60554af1-3e15-4221-a654-8404e0c1e8ef_page-0001.jpg",
       points: [
         "Worked on a machine learning system for Google Search performance and webpage prioritization.",
         "Performed data analysis, feature engineering, data validation, and target-leakage detection on large-scale search data.",
@@ -406,6 +407,7 @@ export const portfolioData = {
       date: "June 15, 2026 – August 10, 2026",
       location: "Mangaluru, Karnataka",
       github: "https://github.com/Sujan-lab-cell/INVOICE_TO_JSON_AI_PARSER.git",
+      certificateUrl: "/certificates/AYUSHCARE_INTERNSHIP.jpeg",
       points: [
         "Developed a hybrid AI-based invoice parsing system to extract structured data from PDF, image, Excel, and CSV invoices.",
         "Implemented OCR, NLP preprocessing, regex/rule-based extraction, validation, and LLM-based fallback to improve extraction reliability.",
@@ -432,6 +434,7 @@ export const portfolioData = {
       role: "Machine Learning Intern",
       date: "July 2025 – August 2025",
       project: "Heart Disease Detection using Machine Learning",
+      certificateUrl: "/certificates/EDIGLOBE_INTERNSHIP.jpeg",
       points: [
         "Worked on a machine learning project for heart disease risk prediction using structured/tabular health-related data.",
         "Performed basic data preprocessing, exploratory data analysis, feature preparation, and model training.",
@@ -449,6 +452,7 @@ export const portfolioData = {
     paperUrl: "https://sujan-lab-cell.github.io/flyrank-ml-internship/",
     github: "https://github.com/Sujan-lab-cell/flyrank-ml-internship.git",
     githubInfo: "https://github.com/Sujan-lab-cell/FlyRank_ai_info.git",
+    certificateUrl: "/certificates/flyrank-certificate-of-completion-machine-learning-60554af1-3e15-4221-a654-8404e0c1e8ef_page-0001.jpg",
     points: [
       "Worked on a machine learning system for Google Search performance and webpage prioritization.",
       "Performed data analysis, feature engineering, data validation, and target-leakage detection on large-scale search data.",

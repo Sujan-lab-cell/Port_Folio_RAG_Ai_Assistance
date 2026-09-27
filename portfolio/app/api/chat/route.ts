@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { performHybridRetrieval } from '@/src/lib/rag/retrieval';
 import { assembleContext } from '@/src/lib/rag/context';
 import { generateGroundedAnswer } from '@/src/lib/rag/generator';
+import { detectNavigationIntent } from '@/src/lib/navigationIntent';
 
 export async function POST(req: NextRequest) {
   // Stage 1: Request received
@@ -11,12 +12,29 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const query = body.message || body.prompt || body.query;
+    const language = body.language || 'en';
 
     if (!query || typeof query !== 'string') {
       return NextResponse.json(
         { error: 'Valid chat query/message is required.' },
         { status: 400 }
       );
+    }
+
+    // Check for navigation intent
+    const { isPureNavigation, navAction } = detectNavigationIntent(query, language);
+
+    if (isPureNavigation && navAction) {
+      const pageName = navAction.route === '/' ? 'Home' : navAction.route.replace('/', '');
+      const capitalizedPage = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+      const defaultAnswer = language === 'ja'
+        ? `かしこまりました。スジャンの${capitalizedPage}ページはこちらです。`
+        : `Sure — here's Sujan's ${capitalizedPage} page.`;
+
+      return NextResponse.json({
+        answer: defaultAnswer,
+        navAction,
+      });
     }
 
     // Stages 2, 3, 4: Embedding, Supabase Retrieval, Reranking
@@ -79,6 +97,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       answer: generationResult.answer,
+      navAction: navAction || undefined,
       chunks: assembledContext.usedChunks,
       chunkCount: assembledContext.chunkCount,
       telemetry,

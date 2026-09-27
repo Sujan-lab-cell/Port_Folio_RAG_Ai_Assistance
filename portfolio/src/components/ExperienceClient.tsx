@@ -32,6 +32,17 @@ export function ExperienceClient() {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                  {"certificateUrl" in exp && exp.certificateUrl && (
+                    <a
+                      href={exp.certificateUrl as string}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-mono font-medium text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition"
+                    >
+                      <span>{ui.buttons.viewCertificate || "View Certificate"}</span>
+                      <ExternalLink size={13} />
+                    </a>
+                  )}
                   {"paperUrl" in exp && exp.paperUrl && (
                     <a
                       href={exp.paperUrl as string}

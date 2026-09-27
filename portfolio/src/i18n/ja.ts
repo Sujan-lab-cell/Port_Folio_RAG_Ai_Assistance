@@ -389,6 +389,7 @@ export const portfolioDataJA: PortfolioData = {
       paperUrl: "https://sujan-lab-cell.github.io/flyrank-ml-internship/",
       github: "https://github.com/Sujan-lab-cell/flyrank-ml-internship.git",
       githubInfo: "https://github.com/Sujan-lab-cell/FlyRank_ai_info.git",
+      certificateUrl: "/certificates/flyrank-certificate-of-completion-machine-learning-60554af1-3e15-4221-a654-8404e0c1e8ef_page-0001.jpg",
       points: [
         "Google検索順位パフォーマンス予測およびウェブページ改善優先度設定のための機械学習システムを構築。",
         "大規模検索パフォーマンスデータに対してデータ分析、特徴量エンジニアリング、データ検証、およびターゲットリーク検出を実施。",
@@ -417,6 +418,7 @@ export const portfolioDataJA: PortfolioData = {
       date: "2026年6月15日 – 2026年8月10日",
       location: "インド・カルナータカ州マンガロール",
       github: "https://github.com/Sujan-lab-cell/INVOICE_TO_JSON_AI_PARSER.git",
+      certificateUrl: "/certificates/AYUSHCARE_INTERNSHIP.jpeg",
       points: [
         "PDF、画像、Excel、CSV 形式の請求書から構造化データを抽出するハイブリッド AI パーサーシステムを開発。",
         "抽出信頼性を向上させるため、OCR、NLP前処理、正規表現/ルール抽出、バリデーション、および LLM フォールバックを実装。",
@@ -443,6 +445,7 @@ export const portfolioDataJA: PortfolioData = {
       role: "機械学習インターン (Machine Learning Intern)",
       date: "2025年7月 – 2025年8月",
       project: "機械学習を用いた心臓病リスク予測システム",
+      certificateUrl: "/certificates/EDIGLOBE_INTERNSHIP.jpeg",
       points: [
         "構造化ヘルスケアデータを用いた心臓病リスク予測機械学習プロジェクトに従事。",
         "データ前処理、探索的データ分析 (EDA)、特徴量作成、およびモデル訓練を担当。",
@@ -460,6 +463,7 @@ export const portfolioDataJA: PortfolioData = {
     paperUrl: "https://sujan-lab-cell.github.io/flyrank-ml-internship/",
     github: "https://github.com/Sujan-lab-cell/flyrank-ml-internship.git",
     githubInfo: "https://github.com/Sujan-lab-cell/FlyRank_ai_info.git",
+    certificateUrl: "/certificates/flyrank-certificate-of-completion-machine-learning-60554af1-3e15-4221-a654-8404e0c1e8ef_page-0001.jpg",
     points: [
       "Google検索順位パフォーマンス予測およびウェブページ改善優先度設定のための機械学習システムを構築。",
       "大規模検索パフォーマンスデータに対してデータ分析、特徴量エンジニアリング、データ検証、およびターゲットリーク検出を実施。",
@@ -900,7 +904,7 @@ export const uiJA: UIStrings = {
     filterCompetitions: "コンテスト",
     filterCourses: "講座・学習",
     filterWorkshops: "ワークショップ",
-    filterProfessional: "実務・インターン",
+    filterProfessional: "インターンシップ証明書",
     filterProjects: "プロジェクト",
     filterActivities: "活動・その他",
     noCredentialsFound: "このカテゴリーには実績が見つかりませんでした。",
