@@ -91,6 +91,8 @@ export const AIAssistantProvider: React.FC<{ children: React.ReactNode }> = ({ c
                   answer: data.answer,
                   navAction: data.navAction || null,
                   navigation: data.navigation || null,
+                  provider: data.provider || "rag",
+                  isFallback: typeof data.isFallback === "boolean" ? data.isFallback : false,
                   isLoading: false,
                 }
               : msg

@@ -198,6 +198,32 @@ export function AIMessage({ message }: AIMessageProps) {
           <span className="text-cyan-300 font-semibold">
             {lang === "ja" ? "AIアシスタント" : "AI Assistant"}
           </span>
+          {message.provider && (
+            <span
+              className={`ml-1 text-[9px] font-mono px-1.5 py-0.5 rounded border flex items-center gap-1 opacity-90 ${
+                message.provider === "rag"
+                  ? "bg-emerald-950/60 text-emerald-300 border-emerald-500/30"
+                  : message.provider === "cloud"
+                  ? "bg-amber-950/60 text-amber-300 border-amber-500/30"
+                  : "bg-indigo-950/60 text-indigo-300 border-indigo-500/30"
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  message.provider === "rag"
+                    ? "bg-emerald-400"
+                    : message.provider === "cloud"
+                    ? "bg-amber-400"
+                    : "bg-indigo-400"
+                }`}
+              />
+              {message.provider === "rag"
+                ? "RAG Active"
+                : message.provider === "cloud"
+                ? "Cloud AI Active"
+                : "Basic Knowledge Mode"}
+            </span>
+          )}
         </div>
 
         <div className="rounded-2xl rounded-tl-xs bg-slate-900/90 border border-slate-800 p-3.5 text-xs text-slate-200 shadow-md max-w-[92%] w-full break-words">

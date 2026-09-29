@@ -26,6 +26,7 @@ export interface CloudFallbackResponse {
     target?: string;
   };
   isFallback: true;
+  provider: "cloud";
 }
 
 /**
@@ -123,6 +124,7 @@ STRICT INSTRUCTIONS:
       answer,
       navigation,
       isFallback: true,
+      provider: "cloud",
     };
   } catch (err) {
     console.warn("Cloud LLM fallback execution failed:", err);

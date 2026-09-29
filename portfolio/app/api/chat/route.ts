@@ -19,6 +19,7 @@ async function handleFallbackCascade(
     return NextResponse.json({
       answer: cloudResult.answer,
       navigation: cloudResult.navigation,
+      provider: 'cloud',
       isFallback: true,
     });
   }
@@ -31,6 +32,7 @@ async function handleFallbackCascade(
   return NextResponse.json({
     answer: fallbackResult.answer,
     navigation,
+    provider: 'rule',
     isFallback: true,
   });
 }
@@ -91,6 +93,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
           answer: defaultAnswer,
           navigation: { section: structuredNav.section, target: structuredNav.target },
+          provider: 'rag',
+          isFallback: false,
         });
       }
 
@@ -175,6 +179,8 @@ export async function POST(req: NextRequest) {
         chunks: assembledContext.usedChunks,
         chunkCount: assembledContext.chunkCount,
         telemetry,
+        provider: 'rag',
+        isFallback: false,
       });
 
     } catch (ragError: any) {

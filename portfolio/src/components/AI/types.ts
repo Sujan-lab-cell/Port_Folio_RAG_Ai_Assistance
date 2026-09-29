@@ -1,3 +1,5 @@
+export type AssistantProvider = "rag" | "cloud" | "rule";
+
 export interface NavAction {
   route: string;
   label: string;
@@ -16,6 +18,8 @@ export interface ChatMessage {
   navigation?: { section: string; target?: string } | null;
   error?: string | null;
   isLoading?: boolean;
+  provider?: AssistantProvider;
+  isFallback?: boolean;
 }
 
 export const getQuickPrompts = (lang: string): string[] => {

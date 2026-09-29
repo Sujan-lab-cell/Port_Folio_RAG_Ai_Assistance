@@ -60,6 +60,27 @@ export function AIChatWindow({
     setInput("");
   };
 
+  // Determine active provider based on the last message with a provider, or default to "rag"
+  const lastProviderMessage = [...messages].reverse().find((m) => m.provider);
+  const activeProvider = lastProviderMessage?.provider || "rag";
+
+  let statusTitle = "RAG Active";
+  let statusSubtitle = "BAAI/bge-m3 + Supabase";
+  let dotClass = "bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]";
+  let titleColor = "text-emerald-400";
+
+  if (activeProvider === "cloud") {
+    statusTitle = "Cloud AI Active";
+    statusSubtitle = "RAG unavailable";
+    dotClass = "bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.8)]";
+    titleColor = "text-amber-400";
+  } else if (activeProvider === "rule") {
+    statusTitle = "Basic Knowledge Mode";
+    statusSubtitle = "RAG unavailable";
+    dotClass = "bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]";
+    titleColor = "text-indigo-300";
+  }
+
   return (
     <motion.div
       layout
@@ -92,12 +113,13 @@ export function AIChatWindow({
               <h3 className="text-xs font-bold font-mono text-cyan-300 tracking-wide uppercase">
                 {titleText}
               </h3>
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             </div>
-            <p className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
-              <Zap size={10} className="text-amber-400 shrink-0" />
-              <span>RAG Core Active</span>
-            </p>
+            <div className="text-[10px] font-mono flex items-center gap-1.5 text-slate-400 mt-0.5">
+              <span className={`h-2 w-2 rounded-full shrink-0 ${dotClass}`} />
+              <span className={`font-semibold ${titleColor}`}>{statusTitle}</span>
+              <span className="text-slate-600 text-[9px]">•</span>
+              <span className="text-slate-400 text-[9px] truncate">{statusSubtitle}</span>
+            </div>
           </div>
         </div>
 
