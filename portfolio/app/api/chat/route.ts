@@ -24,7 +24,7 @@ async function handleFallbackCascade(
   }
 
   // Tier 3: Final Rule-based Safety Fallback
-  const fallbackResult = resolveFallbackQuery(query);
+  const fallbackResult = resolveFallbackQuery(query, language, history);
   const fallbackRoute = fallbackResult.type !== 'answer' ? fallbackResult.route : undefined;
   const navigation = extractNavigationMetadata(query, language, fallbackRoute);
 
