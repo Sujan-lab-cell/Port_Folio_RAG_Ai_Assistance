@@ -114,7 +114,6 @@ export function detectNavigationIntent(query: string, lang: string = "en"): Inte
   const hasInfoWords = INFO_QUESTION_REGEX.test(normalized);
 
   // If query starts with "tell me about ..." or contains "what/why/how/cgpa", it's mixed
-  // Exception: "show me sujan's projects" has "show me" which is NAV_VERB_REGEX
   const isTellMeAbout = normalized.includes("tell me about") || normalized.includes("explain");
   const isPureNav = !isTellMeAbout && (!hasInfoWords || NAV_VERB_REGEX.test(normalized));
 

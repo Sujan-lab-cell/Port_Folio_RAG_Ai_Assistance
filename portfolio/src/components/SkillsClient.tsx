@@ -21,6 +21,7 @@ import {
   Terminal,
 } from "lucide-react";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 const iconMap = {
@@ -82,7 +83,7 @@ export function SkillsClient() {
   }, [searchQuery, activeCategory, orderedSkills]);
 
   return (
-    <div className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+    <div id="skills" className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-12">
         {/* Header Section */}
         <SectionHeading
@@ -307,6 +308,8 @@ export function SkillsClient() {
             </div>
           </div>
         </div>
+
+        <SectionNavigation currentSection="skills" />
       </div>
     </div>
   );

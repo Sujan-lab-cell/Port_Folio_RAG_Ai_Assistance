@@ -13,6 +13,7 @@ export interface ChatMessage {
   question: string;
   answer: string | null;
   navAction?: NavAction | null;
+  navigation?: { section: string; target?: string } | null;
   error?: string | null;
   isLoading?: boolean;
 }

@@ -211,7 +211,7 @@ export function extractEntitiesFromHistory(history: ChatHistoryItem[]): Conversa
 
 /**
   Resolves ambiguous pronouns/references in a user query using conversation history & recency.
-  Returns ConversationResolution with confidence and optional resolved query string.
+  Supports both English and Japanese contextual references.
  */
 export function resolveConversationalQuery(
   query: string,
@@ -270,7 +270,6 @@ export function resolveConversationalQuery(
     const recentProjectEntities = historyEntities.filter((e) => e.type === "project");
 
     if (recentProjectEntities.length > 0) {
-      // Use the MOST RECENT project entity
       const entity = recentProjectEntities[0];
       const resolvedQuery = trimmedQuery
         .replace(projectRefRegex, entity.name)
@@ -300,7 +299,6 @@ export function resolveConversationalQuery(
     );
 
     if (recentCompanyEntities.length > 0) {
-      // Use the MOST RECENT company/internship entity
       const entity = recentCompanyEntities[0];
       const resolvedQuery = trimmedQuery
         .replace(companyRefRegex, entity.name)
@@ -326,7 +324,6 @@ export function resolveConversationalQuery(
     );
 
     if (recentPlaceEntities.length > 0) {
-      // Use the MOST RECENT place/company entity
       const entity = recentPlaceEntities[0];
       const resolvedQuery = trimmedQuery
         .replace(thereRefRegex, `at ${entity.name}`)
@@ -346,7 +343,7 @@ export function resolveConversationalQuery(
     }
   }
 
-  // Rule 5: Check general pronoun "it"
+  // Rule 5: Check general English pronoun "it"
   const pronounItRegex = /\bit\b/gi;
   if (pronounItRegex.test(trimmedQuery)) {
     const isProjectContextQuery = /\bproject\b/i.test(trimmedQuery);
@@ -355,7 +352,6 @@ export function resolveConversationalQuery(
       : historyEntities.filter((e) => e.type === "project" || e.type === "company");
 
     if (recentCandidateEntities.length > 0) {
-      // Use the MOST RECENT candidate entity
       const entity = recentCandidateEntities[0];
       const resolvedQuery = trimmedQuery
         .replace(pronounItRegex, entity.name)
@@ -375,7 +371,135 @@ export function resolveConversationalQuery(
     }
   }
 
-  // Rule 6: Default fallback -> Return original query unchanged
+  // Rule 6: Japanese Contextual Reference Resolution
+  // 6a: Specific Japanese Noun Phrase References ("そのプロジェクト", "このプロジェクト")
+  const jaProjectRefRegex = /(そのプロジェクト|このプロジェクト)/g;
+  if (jaProjectRefRegex.test(trimmedQuery)) {
+    const recentProjectEntities = historyEntities.filter((e) => e.type === "project");
+    if (recentProjectEntities.length > 0) {
+      const entity = recentProjectEntities[0];
+      const resolvedQuery = trimmedQuery.replace(jaProjectRefRegex, entity.name).trim();
+      return {
+        originalQuery: trimmedQuery,
+        resolvedQuery,
+        wasResolved: true,
+        confidence: "high",
+        entity: { name: entity.name, type: entity.type },
+      };
+    }
+  }
+
+  const jaInternshipRefRegex = /(そのインターンシップ|このインターンシップ|その会社|この会社)/g;
+  if (jaInternshipRefRegex.test(trimmedQuery)) {
+    const recentCompanyEntities = historyEntities.filter(
+      (e) => e.type === "company" || e.type === "internship"
+    );
+    if (recentCompanyEntities.length > 0) {
+      const entity = recentCompanyEntities[0];
+      const resolvedQuery = trimmedQuery.replace(jaInternshipRefRegex, entity.name).trim();
+      return {
+        originalQuery: trimmedQuery,
+        resolvedQuery,
+        wasResolved: true,
+        confidence: "high",
+        entity: { name: entity.name, type: entity.type },
+      };
+    }
+  }
+
+  // 6b: Japanese Contextual Location/Place Reference ("そこで")
+  const jaSokodeRefRegex = /そこで/g;
+  if (jaSokodeRefRegex.test(trimmedQuery)) {
+    const recentCandidateEntities = historyEntities.filter(
+      (e) => e.type === "project" || e.type === "company" || e.type === "internship" || e.type === "education"
+    );
+    if (recentCandidateEntities.length > 0) {
+      const entity = recentCandidateEntities[0];
+      const resolvedQuery = trimmedQuery.replace(jaSokodeRefRegex, `${entity.name}で`).trim();
+      return {
+        originalQuery: trimmedQuery,
+        resolvedQuery,
+        wasResolved: true,
+        confidence: "high",
+        entity: { name: entity.name, type: entity.type },
+      };
+    }
+  }
+
+  // 6c: Japanese Person References ("彼の", "彼")
+  const jaKareNoRefRegex = /彼の/g;
+  const jaKareRefRegex = /彼/g;
+  if (jaKareNoRefRegex.test(trimmedQuery) || jaKareRefRegex.test(trimmedQuery)) {
+    const personEntity = historyEntities.find((e) => e.type === "person") || { name: "Sujan", type: "person" as const };
+    const resolvedQuery = trimmedQuery
+      .replace(jaKareNoRefRegex, `${personEntity.name}の`)
+      .replace(jaKareRefRegex, personEntity.name)
+      .trim();
+    return {
+      originalQuery: trimmedQuery,
+      resolvedQuery,
+      wasResolved: true,
+      confidence: "high",
+      entity: { name: personEntity.name, type: personEntity.type },
+    };
+  }
+
+  // 6d: Japanese Possessive/Demonstrative Pronouns ("それの", "これの", "それ", "これ", "その", "この")
+  const jaSoreNoRefRegex = /(それの|これの)/g;
+  if (jaSoreNoRefRegex.test(trimmedQuery)) {
+    const recentCandidateEntities = historyEntities.filter(
+      (e) => e.type === "project" || e.type === "company" || e.type === "education"
+    );
+    if (recentCandidateEntities.length > 0) {
+      const entity = recentCandidateEntities[0];
+      const resolvedQuery = trimmedQuery.replace(jaSoreNoRefRegex, `${entity.name}の`).trim();
+      return {
+        originalQuery: trimmedQuery,
+        resolvedQuery,
+        wasResolved: true,
+        confidence: "high",
+        entity: { name: entity.name, type: entity.type },
+      };
+    }
+  }
+
+  const jaSoreRefRegex = /(それ|これ)/g;
+  if (jaSoreRefRegex.test(trimmedQuery)) {
+    const recentCandidateEntities = historyEntities.filter(
+      (e) => e.type === "project" || e.type === "company" || e.type === "education"
+    );
+    if (recentCandidateEntities.length > 0) {
+      const entity = recentCandidateEntities[0];
+      const resolvedQuery = trimmedQuery.replace(jaSoreRefRegex, entity.name).trim();
+      return {
+        originalQuery: trimmedQuery,
+        resolvedQuery,
+        wasResolved: true,
+        confidence: "high",
+        entity: { name: entity.name, type: entity.type },
+      };
+    }
+  }
+
+  const jaSonoRefRegex = /(その|この)/g;
+  if (jaSonoRefRegex.test(trimmedQuery)) {
+    const recentCandidateEntities = historyEntities.filter(
+      (e) => e.type === "project" || e.type === "company" || e.type === "education"
+    );
+    if (recentCandidateEntities.length > 0) {
+      const entity = recentCandidateEntities[0];
+      const resolvedQuery = trimmedQuery.replace(jaSonoRefRegex, `${entity.name}の`).trim();
+      return {
+        originalQuery: trimmedQuery,
+        resolvedQuery,
+        wasResolved: true,
+        confidence: "high",
+        entity: { name: entity.name, type: entity.type },
+      };
+    }
+  }
+
+  // Rule 7: Default fallback -> Return original query unchanged
   return {
     originalQuery: trimmedQuery,
     resolvedQuery: trimmedQuery,

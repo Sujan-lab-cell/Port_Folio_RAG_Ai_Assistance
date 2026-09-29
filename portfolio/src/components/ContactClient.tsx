@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 export function ContactClient() {
@@ -57,7 +58,7 @@ export function ContactClient() {
   )}`;
 
   return (
-    <div className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+    <div id="contact" className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-12">
         {/* Top Heading */}
         <SectionHeading
@@ -317,6 +318,8 @@ export function ContactClient() {
             </div>
           </motion.div>
         </div>
+
+        <SectionNavigation currentSection="contact" />
       </div>
     </div>
   );

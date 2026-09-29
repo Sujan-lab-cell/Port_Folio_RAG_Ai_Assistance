@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Sparkles, User, ExternalLink, FileText, Compass, ArrowRight } from "lucide-react";
 import { ChatMessage } from "./types";
 import { useLanguage } from "@/src/i18n";
+import { navigateToSection } from "@/src/lib/navigation/navigation";
 
 interface AIMessageProps {
   message: ChatMessage;
@@ -210,21 +211,7 @@ export function AIMessage({ message }: AIMessageProps) {
               {message.error}
             </div>
           ) : (
-            <>
-              <FormattedMarkdown content={message.answer} />
-              {message.navAction && (
-                <div className="mt-3 pt-2.5 border-t border-cyan-500/20 flex items-center">
-                  <button
-                    onClick={() => router.push(message.navAction!.route)}
-                    className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/60 bg-gradient-to-r from-cyan-500/20 via-cyan-600/15 to-indigo-500/20 px-3.5 py-2 font-mono text-xs font-bold text-cyan-200 shadow-md shadow-cyan-500/10 hover:border-cyan-300 hover:bg-cyan-500/30 hover:text-white hover:scale-105 transition duration-200 cursor-pointer"
-                  >
-                    <Compass size={14} className="text-cyan-400 animate-pulse shrink-0" />
-                    <span>{message.navAction.label}</span>
-                    <ArrowRight size={13} className="text-cyan-300 shrink-0" />
-                  </button>
-                </div>
-              )}
-            </>
+            <FormattedMarkdown content={message.answer} />
           )}
         </div>
       </div>

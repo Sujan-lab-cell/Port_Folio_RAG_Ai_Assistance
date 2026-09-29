@@ -20,13 +20,14 @@ import {
   FileText,
 } from "lucide-react";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 export function AboutClient() {
   const { ui, portfolioData } = useLanguage();
 
   return (
-    <div className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+    <div id="about" className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-16">
         {/* Header Section */}
         <SectionHeading
@@ -126,6 +127,7 @@ export function AboutClient() {
 
           {/* Education Card */}
           <motion.div
+            id="education"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -407,6 +409,8 @@ export function AboutClient() {
             </div>
           </div>
         </motion.div>
+
+        <SectionNavigation currentSection="about" />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, Clock, Tag, ArrowRight, Sparkles, BookOpen, X, FlaskConical } from "lucide-react";
 import { BlogPost } from "@/src/data/portfolio";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 export function BlogClient() {
@@ -65,7 +66,7 @@ export function BlogClient() {
   }, [filteredPosts, featuredPost, searchQuery, selectedCategory, selectedTag]);
 
   return (
-    <div className="px-4 py-12 sm:px-6 lg:px-8">
+    <div id="blog" className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow={ui.blogPage.eyebrow}
@@ -290,6 +291,8 @@ export function BlogClient() {
             </button>
           </div>
         )}
+
+        <SectionNavigation currentSection="blog" />
       </div>
     </div>
   );

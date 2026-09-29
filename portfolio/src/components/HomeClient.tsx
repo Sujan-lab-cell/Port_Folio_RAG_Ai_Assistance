@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IntroScreen } from "@/src/components/IntroScreen";
 import { AIRobotHeroCanvas } from "@/src/components/AIRobotHeroCanvas";
 import { useLanguage } from "@/src/i18n";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 
 export function HomeClient() {
   const [mounted, setMounted] = useState(false);
@@ -80,7 +81,7 @@ export function HomeClient() {
         {showIntro && <IntroScreen key="intro" onEnter={handleEnterPortfolio} />}
       </AnimatePresence>
 
-      <div className="space-y-24 py-6">
+      <div id="home" className="space-y-24 py-6">
         {/* Asymmetric Experimental AI Studio Hero Section */}
         <section className="relative mx-auto min-h-[90vh] max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col justify-center overflow-hidden">
           {/* Massive Oversized Background Typography Watermark */}
@@ -261,6 +262,8 @@ export function HomeClient() {
             </div>
           </div>
         </section>
+
+        <SectionNavigation currentSection="home" />
       </div>
     </>
   );

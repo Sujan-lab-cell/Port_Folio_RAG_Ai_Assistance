@@ -2,13 +2,14 @@
 
 import { ExternalLink, Code2, Trophy, BriefcaseBusiness } from "lucide-react";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 export function ProfilesClient() {
   const { ui, portfolioData } = useLanguage();
 
   return (
-    <div className="px-4 py-12 sm:px-6 lg:px-8">
+    <div id="profiles" className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow={ui.profilesPage.eyebrow}
@@ -50,6 +51,8 @@ export function ProfilesClient() {
             );
           })}
         </div>
+
+        <SectionNavigation currentSection="profiles" />
       </div>
     </div>
   );

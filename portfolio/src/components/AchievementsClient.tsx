@@ -23,6 +23,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 const CATEGORY_TABS = [
@@ -104,7 +105,7 @@ export function AchievementsClient() {
   };
 
   return (
-    <div className="px-4 py-12 sm:px-6 lg:px-8">
+    <div id="achievements" className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* Page Header */}
         <SectionHeading
@@ -300,6 +301,8 @@ export function AchievementsClient() {
             </button>
           </div>
         )}
+
+        <SectionNavigation currentSection="achievements" />
       </div>
 
       {/* Lightbox Certificate Preview Modal */}

@@ -26,6 +26,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Project } from "@/src/data/portfolio";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 export function ProjectsClient() {
@@ -82,7 +83,7 @@ export function ProjectsClient() {
   const banking = portfolioData.projects.find((p) => p.slug === "banking-management-system");
 
   return (
-    <div className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+    <div id="projects" className="min-h-screen px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-12">
         {/* Top Header */}
         <SectionHeading
@@ -212,6 +213,8 @@ export function ProjectsClient() {
             )}
           </AnimatePresence>
         )}
+
+        <SectionNavigation currentSection="projects" />
       </div>
     </div>
   );
@@ -221,6 +224,7 @@ export function ProjectsClient() {
 function FlyRankIndustryHero({ project }: { project: Project }) {
   return (
     <motion.article
+      id={project.slug}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -393,6 +397,7 @@ function FlyRankIndustryHero({ project }: { project: Project }) {
 function ColorectalPolypHero({ project }: { project: Project }) {
   return (
     <motion.article
+      id={project.slug}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -536,6 +541,7 @@ function ColorectalPolypHero({ project }: { project: Project }) {
 function GeoSentinelHero({ project }: { project: Project }) {
   return (
     <motion.article
+      id={project.slug}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -688,6 +694,7 @@ function GeoSentinelHero({ project }: { project: Project }) {
 function SecondaryFeaturedCard({ project, icon, badge }: { project: Project; icon: React.ReactNode; badge: string }) {
   return (
     <motion.article
+      id={project.slug}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -771,6 +778,7 @@ function SecondaryFeaturedCard({ project, icon, badge }: { project: Project; ico
 function CompactCaseStudyCard({ project, icon, badge }: { project: Project; icon: React.ReactNode; badge: string }) {
   return (
     <motion.article
+      id={project.slug}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -878,6 +886,7 @@ function CompactCaseStudyCard({ project, icon, badge }: { project: Project; icon
 function FilteredProjectCard({ project }: { project: Project }) {
   return (
     <motion.article
+      id={project.slug}
       layout
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}

@@ -1,12 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
-import { usePathname } from "next/navigation";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/src/i18n";
 import { ChatMessage, ChatHistoryItem } from "./types";
 import { AIButton } from "./AIButton";
 import { AIChatWindow } from "./AIChatWindow";
 import { AnimatePresence } from "framer-motion";
+import { navigateToSection, processPendingHighlight } from "@/src/lib/navigation/navigation";
 
 interface AIAssistantContextType {
   isOpen: boolean;
@@ -28,6 +29,12 @@ export const AIAssistantProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { lang } = useLanguage();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    processPendingHighlight();
+  }, [pathname]);
 
   const openAssistant = () => setIsOpen(true);
   const clearMessages = () => setMessages([]);
@@ -83,11 +90,17 @@ export const AIAssistantProvider: React.FC<{ children: React.ReactNode }> = ({ c
                   ...msg,
                   answer: data.answer,
                   navAction: data.navAction || null,
+                  navigation: data.navigation || null,
                   isLoading: false,
                 }
               : msg
           )
         );
+
+        // Automatic navigation event trigger if navigation metadata returned (provider-independent)
+        if (data.navigation && data.navigation.section) {
+          navigateToSection(data.navigation.section, data.navigation.target, router.push);
+        }
       } else if (data.error) {
         setMessages((prev) =>
           prev.map((msg) =>

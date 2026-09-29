@@ -1,4 +1,5 @@
 import { fallbackKnowledge } from "./knowledge";
+import { extractNavigationMetadata } from "@/src/lib/navigation/navigationTarget";
 
 export type FallbackResult =
   | {
@@ -18,8 +19,119 @@ export type FallbackResult =
       label?: string;
     };
 
+export interface CloudFallbackResponse {
+  answer: string;
+  navigation?: {
+    section: string;
+    target?: string;
+  };
+  isFallback: true;
+}
+
 /**
- * Lightweight serverless fallback resolver for Vercel deployment architecture.
+ * Serverless Cloud LLM fallback resolver (Tier 2).
+ * Uses Groq API (or xAI API) with native fetch() to generate grounded portfolio answers
+ * when local RAG microservices are unavailable (e.g. on Vercel deployment).
+ */
+export async function resolveCloudFallbackQuery(
+  query: string,
+  language: string = "en",
+  history?: Array<{ role: "user" | "assistant"; content: string }>
+): Promise<CloudFallbackResponse | null> {
+  const apiKey = process.env.GROQ_API_KEY || process.env.XAI_API_KEY;
+  if (!apiKey || !apiKey.trim()) {
+    // Missing API key: controlled return null to allow Tier 3 rule fallback to run
+    return null;
+  }
+
+  const facts = fallbackKnowledge.facts;
+  const entitySummary = fallbackKnowledge.entityRoutes
+    .map((e) => `- ${e.name} (${e.type}, Path: ${e.path}, Aliases: ${e.aliases.join(", ")})`)
+    .join("\n");
+
+  const systemPrompt = `You are Sujan K S's Portfolio AI Assistant.
+Answer user questions accurately, concisely, and naturally using ONLY the portfolio knowledge provided below.
+
+PORTFOLIO KNOWLEDGE:
+- Name: ${facts.name}
+- Role: ${facts.role}
+- Location: ${facts.location}
+- Education: ${facts.education.degree} at ${facts.education.institution} (${facts.education.years}), CGPA: ${facts.education.cgpa}
+- Expected Graduation: ${facts.graduationYear}
+- Total Projects Built: ${facts.projectsCount} (${facts.majorAreas.join(", ")})
+- Japanese Language Learning: ${facts.japaneseLearning}
+
+KEY PROJECTS & EXPERIENCE CASE STUDIES:
+${entitySummary}
+
+STRICT INSTRUCTIONS:
+1. Rely strictly on the portfolio knowledge provided above. Never invent, hallucinate, or assume facts, projects, internships, metrics, dates, or achievements not present.
+2. If the user's question cannot be answered using the provided knowledge, clearly state: "The requested information is not available in Sujan's portfolio knowledge base."
+3. Respond in the user's requested language (${language === "ja" ? "Japanese" : "English"}).
+4. Keep answers concise, factual, and direct for a web portfolio chatbot.`;
+
+  const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+    { role: "system", content: systemPrompt },
+  ];
+
+  if (Array.isArray(history)) {
+    for (const item of history.slice(-6)) {
+      if (item && (item.role === "user" || item.role === "assistant") && typeof item.content === "string") {
+        messages.push({ role: item.role, content: item.content });
+      }
+    }
+  }
+
+  messages.push({ role: "user", content: query });
+
+  try {
+    const isGroq = apiKey.startsWith("gsk_");
+    const endpoint = isGroq
+      ? "https://api.groq.com/openai/v1/chat/completions"
+      : "https://api.x.ai/v1/chat/completions";
+    const model = isGroq ? "qwen/qwen3.8-27b" : "grok-2-latest";
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey.trim()}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: 0.2,
+        max_tokens: 500,
+      }),
+    });
+
+    if (!response.ok) {
+      console.warn(`Groq/Cloud LLM API returned non-200 status: ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json();
+    const answer = data?.choices?.[0]?.message?.content?.trim();
+
+    if (!answer) {
+      return null;
+    }
+
+    const navigation = extractNavigationMetadata(query, language);
+
+    return {
+      answer,
+      navigation,
+      isFallback: true,
+    };
+  } catch (err) {
+    console.warn("Cloud LLM fallback execution failed:", err);
+    return null;
+  }
+}
+
+/**
+ * Lightweight serverless fallback resolver for Vercel deployment architecture (Tier 3).
  * Evaluates queries against structured fallback knowledge without requiring RAG microservices.
  */
 export function resolveFallbackQuery(query: string): FallbackResult {

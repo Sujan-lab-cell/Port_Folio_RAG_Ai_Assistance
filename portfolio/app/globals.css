@@ -82,3 +82,34 @@ body {
   background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
   background-size: 40px 40px;
 }
+
+/* AI Target Highlight Glow Animation */
+@keyframes ai-target-glow {
+  0% {
+    box-shadow: 0 0 0px rgba(34, 211, 238, 0);
+    border-color: rgba(34, 211, 238, 0.2);
+    transform: scale(1);
+  }
+  20% {
+    box-shadow: 0 0 35px rgba(34, 211, 238, 0.8), 0 0 15px rgba(34, 211, 238, 0.6);
+    border-color: rgba(34, 211, 238, 1);
+    transform: scale(1.015);
+  }
+  80% {
+    box-shadow: 0 0 35px rgba(34, 211, 238, 0.8), 0 0 15px rgba(34, 211, 238, 0.6);
+    border-color: rgba(34, 211, 238, 1);
+    transform: scale(1.015);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(34, 211, 238, 0);
+    border-color: rgba(34, 211, 238, 0.2);
+    transform: scale(1);
+  }
+}
+
+.ai-target-highlight {
+  animation: ai-target-glow 3.5s ease-in-out forwards !important;
+  z-index: 30 !important;
+  position: relative !important;
+}
+

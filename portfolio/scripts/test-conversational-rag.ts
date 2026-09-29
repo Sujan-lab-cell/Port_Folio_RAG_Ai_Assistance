@@ -1,5 +1,5 @@
 import { resolveConversationalQuery } from "../src/lib/rag/conversationResolver";
-import { detectNavigationIntent } from "../src/lib/navigationIntent";
+import { detectNavigationIntent } from "../src/lib/navigation/navigationIntent";
 import { resolveFallbackQuery } from "../src/lib/assistant/fallback/resolver";
 import { ChatHistoryItem } from "../src/components/AI/types";
 

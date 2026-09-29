@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { BriefcaseBusiness, CheckCircle2, ExternalLink, FolderGit2 } from "lucide-react";
 import { SectionHeading } from "@/src/components/SectionHeading";
+import { SectionNavigation } from "@/src/components/SectionNavigation";
 import { useLanguage } from "@/src/i18n";
 
 export function ExperienceClient() {
   const { ui, portfolioData } = useLanguage();
 
   return (
-    <div className="px-4 py-12 sm:px-6 lg:px-8">
+    <div id="experience" className="px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-8">
         <SectionHeading
           eyebrow={ui.experiencePage.eyebrow}
@@ -18,11 +19,19 @@ export function ExperienceClient() {
         />
 
         <div className="space-y-6">
-          {portfolioData.experiences.map((exp) => (
-            <div
-              key={exp.company}
-              className="rounded-xl border border-slate-900/10 bg-white/75 p-6 backdrop-blur dark:border-white/10 dark:bg-white/[0.06] md:p-8"
-            >
+          {portfolioData.experiences.map((exp) => {
+            const cardId = exp.company.toLowerCase().includes("flyrank")
+              ? "flyrank"
+              : exp.company.toLowerCase().includes("isiri") || exp.company.toLowerCase().includes("ayuslab")
+              ? "isiri"
+              : "ediglobe";
+            return (
+              <div
+                key={exp.company}
+                id={cardId}
+                data-target-id={cardId}
+                className="rounded-xl border border-slate-900/10 bg-white/75 p-6 backdrop-blur dark:border-white/10 dark:bg-white/[0.06] md:p-8"
+              >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="text-2xl font-semibold text-slate-950 dark:text-white md:text-3xl">
@@ -137,8 +146,11 @@ export function ExperienceClient() {
                 </div>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
+
+        <SectionNavigation currentSection="experience" />
       </div>
     </div>
   );
