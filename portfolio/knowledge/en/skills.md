@@ -49,3 +49,16 @@ Sujan K S possesses a broad technical skillset spanning Artificial Intelligence,
 
 ## Computer Science Foundations
 - Core CS Principles: Data Structures & Algorithms (DSA), Object-Oriented Programming (OOP), Database Management Systems (DBMS), Operating Systems (OS), Computer Networks.
+
+## Soft Skills & Personal Qualities
+
+- Problem Solving
+- Analytical Thinking
+- Research & Critical Thinking
+- Continuous Learning — enjoys learning new concepts, technologies, and skills.
+- Persistence & Determination — stays committed to solving difficult problems and continues exploring until a solution is found.
+- Curiosity & Exploration — enjoys diving deeply into unfamiliar technologies, tools, and technical concepts.
+- Adaptability — comfortable exploring and learning across different technical domains.
+- Communication & Relationship Building — enjoys meeting new people, building connections, and learning from others.
+- Cultural Curiosity — interested in exploring different cultures, languages, and perspectives.
+- Leadership & Initiative
