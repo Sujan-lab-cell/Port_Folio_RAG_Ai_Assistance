@@ -85,7 +85,7 @@ export function AboutClient() {
                 <ExternalLink size={16} />
               </a>
               <a
-                href="/images/SUJAN_KS_Inter (3).pdf"
+                href="/images/SUJAN_KS_Intr.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-6 py-3.5 text-sm font-semibold text-emerald-300 shadow-lg shadow-emerald-500/10 transition hover:bg-emerald-500/20 hover:border-emerald-400 hover:scale-105 cursor-pointer"
