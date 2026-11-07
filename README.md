@@ -240,7 +240,8 @@ The 3-tier cascade guarantees that deployed serverless instances on Vercel respo
 
 ## Output & Visual Interface
 
-![AI Robot Assistant UI](portfolio/public/images/ai_robot_assistant.jpg)
+![AI Robot Assistant UI](english.jpeg)
+![AI Robot Assistant UI](jap.jpeg)
 
 *Interactive AI Assistant interface featuring bilingual conversation, auto-scrolling navigation, and grounded response rendering.*
 
